@@ -13,7 +13,6 @@ export default function Header({ settings }) {
   const close = () => setOpen(false);
   const threshold = settings?.freeShippingThreshold ?? 150;
   const storeName = settings?.storeName || 'Syrian Military Supply';
-  const tagline = settings?.tagline || 'Surplus · Tactical · Local Crafts';
 
   return (
     <header className="site-header">
@@ -33,11 +32,10 @@ export default function Header({ settings }) {
         </button>
 
         <Link to="/" className="brand" onClick={close}>
-          <span className="brand-mark">★</span>
-          <span>
-            <div className="brand-name">{storeName}</div>
-            <div className="brand-sub">{tagline}</div>
-          </span>
+          <div className="brand-name">{storeName}</div>
+          <svg className="brand-star" viewBox="0 0 24 24" aria-hidden>
+            <path d="M12 2.6 14.4 8l5.9.6-4.5 4 1.6 5.7L12 15.2 6.6 18.3l1.6-5.7-4.5-4 5.9-.6z" />
+          </svg>
         </Link>
 
         <nav className={`main-nav ${open ? 'open' : ''}`}>

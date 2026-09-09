@@ -166,7 +166,7 @@ small { font-size: 0.85em; }
 .topbar a:hover { color: #fff; }
 .topbar-left, .topbar-right { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .header-main { display: flex; align-items: center; gap: 26px; min-height: 76px; }
-.brand { display: flex; align-items: center; gap: 12px; }
+.brand { display: flex; align-items: baseline; gap: 10px; }
 .brand-mark {
   width: 40px; height: 40px;
   display: grid; place-items: center;
@@ -177,8 +177,8 @@ small { font-size: 0.85em; }
   font-weight: 700;
   font-size: 1.1rem;
 }
-.brand-name { font-family: var(--font-head); font-weight: 600; font-size: 1.06rem; letter-spacing: 0.08em; line-height: 1.1; text-transform: uppercase; }
-.brand-sub { font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-3); margin-top: 3px; }
+.brand-name { font-family: var(--font-head); font-weight: 700; font-size: clamp(1.1rem, 2.6vw, 1.45rem); letter-spacing: 0.04em; line-height: 1; text-transform: uppercase; white-space: nowrap; }
+.brand-star { width: 15px; height: 15px; fill: var(--accent); flex: none; align-self: center; }
 .main-nav { display: flex; gap: 2px; }
 .main-nav a {
   position: relative;

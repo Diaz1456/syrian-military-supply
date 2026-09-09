@@ -51,7 +51,7 @@ export default function App() {
       <Route
         path="/"
         element={
-          <PublicLayout>
+          <PublicLayout settings={settings}>
             <Home settings={settings} />
           </PublicLayout>
         }
@@ -59,7 +59,7 @@ export default function App() {
       <Route
         path="/shop"
         element={
-          <PublicLayout>
+          <PublicLayout settings={settings}>
             <Shop />
           </PublicLayout>
         }
@@ -67,7 +67,7 @@ export default function App() {
       <Route
         path="/product/:id"
         element={
-          <PublicLayout>
+          <PublicLayout settings={settings}>
             <ProductDetail />
           </PublicLayout>
         }
@@ -75,7 +75,7 @@ export default function App() {
       <Route
         path="/cart"
         element={
-          <PublicLayout>
+          <PublicLayout settings={settings}>
             <Cart settings={settings} />
           </PublicLayout>
         }
@@ -83,7 +83,7 @@ export default function App() {
       <Route
         path="/checkout"
         element={
-          <PublicLayout>
+          <PublicLayout settings={settings}>
             <Checkout settings={settings} />
           </PublicLayout>
         }
@@ -91,7 +91,7 @@ export default function App() {
       <Route
         path="/order/:id"
         element={
-          <PublicLayout>
+          <PublicLayout settings={settings}>
             <OrderConfirmation settings={settings} />
           </PublicLayout>
         }
@@ -99,7 +99,7 @@ export default function App() {
       <Route
         path="/about"
         element={
-          <PublicLayout>
+          <PublicLayout settings={settings}>
             <About />
           </PublicLayout>
         }
@@ -135,7 +135,7 @@ export default function App() {
       <Route
         path="*"
         element={
-          <PublicLayout>
+          <PublicLayout settings={settings}>
             <MIA />
           </PublicLayout>
         }

@@ -7,7 +7,6 @@ export default function Footer({ settings, showNewsletter }) {
   const { rank, visits } = useVisit();
   const pct = Math.min(100, (visits / 25) * 100);
   const storeName = settings?.storeName || 'Syrian Military Supply';
-  const tagline = settings?.tagline || 'Surplus · Tactical · Local';
 
   return (
     <>
@@ -18,10 +17,7 @@ export default function Footer({ settings, showNewsletter }) {
             <div>
               <div className="brand-copy">
                 <span className="brand-mark">★</span>
-                <div>
-                  <div className="brand-name" style={{ color: '#f2f3f0' }}>{storeName}</div>
-                  <div className="brand-sub" style={{ color: '#8d928f' }}>{tagline}</div>
-                </div>
+                <div className="brand-name" style={{ color: '#f2f3f0' }}>{storeName}</div>
               </div>
               <p className="muted mt-16" style={{ fontSize: '0.86rem', maxWidth: 300 }}>
                 Genuine surplus, tactical gear and local crafts.
