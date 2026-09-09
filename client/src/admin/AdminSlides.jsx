@@ -10,6 +10,7 @@ const empty = {
 export default function AdminSlides() {
   const [slides, setSlides] = useState([]);
   const [editing, setEditing] = useState(null);
+  const [creating, setCreating] = useState(false);
   const [form, setForm] = useState(empty);
   const [file, setFile] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -22,12 +23,29 @@ export default function AdminSlides() {
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
+  const startCreate = () => {
+    setEditing(null);
+    setCreating(true);
+    setForm(empty);
+    setFile(null);
+    setError('');
+  };
+
   const startEdit = (s) => {
     setEditing(s);
-    setForm(s ? {
+    setCreating(false);
+    setForm({
       kicker: s.kicker, title: s.title, text: s.text, cta: s.cta, link: s.link,
       btn2: s.btn2, link2: s.link2, tag: s.tag, sortOrder: s.sortOrder, enabled: s.enabled,
-    } : empty);
+    });
+    setFile(null);
+    setError('');
+  };
+
+  const cancel = () => {
+    setEditing(null);
+    setCreating(false);
+    setForm(empty);
     setFile(null);
     setError('');
   };
@@ -43,9 +61,7 @@ export default function AdminSlides() {
       if (editing) await api.put(`/admin/slides/${editing._id}`, fd);
       else await api.post('/admin/slides', fd);
       setFlash(editing ? 'Slide updated' : 'Slide created');
-      setEditing(null);
-      setForm(empty);
-      setFile(null);
+      cancel();
       load();
     } catch (err) {
       setError(err.response?.data?.message || 'Save failed');
@@ -62,19 +78,21 @@ export default function AdminSlides() {
   const remove = async (s) => {
     if (!window.confirm(`Delete slide "${s.title}"?`)) return;
     await api.delete(`/admin/slides/${s._id}`);
-    if (editing?._id === s._id) { setEditing(null); setForm(empty); }
+    if (editing?._id === s._id) cancel();
     load();
   };
+
+  const formOpen = creating || Boolean(editing);
 
   return (
     <>
       <div className="admin-topbar">
         <h1>Slideshow</h1>
         {flash && <span style={{ color: 'var(--good)' }}>✔ {flash}</span>}
-        {!editing && <button className="btn" onClick={() => startEdit(null)}>+ New Slide</button>}
+        {!formOpen && <button className="btn" onClick={startCreate}>+ New Slide</button>}
       </div>
 
-      {editing ? (
+      {formOpen ? (
         <form onSubmit={submit} className="panel" style={{ maxWidth: 640 }}>
           <h3>{editing ? 'Edit Slide' : 'New Slide'}</h3>
           <div className="form-grid mt-8">
@@ -116,7 +134,7 @@ export default function AdminSlides() {
           {error && <div className="field-error mt-8">{error}</div>}
           <div className="row mt-16" style={{ gap: 10 }}>
             <button className="btn primary" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save Slide'}</button>
-            <button className="btn" type="button" onClick={() => { setEditing(null); setForm(empty); }}>Cancel</button>
+            <button className="btn" type="button" onClick={cancel}>Cancel</button>
           </div>
         </form>
       ) : (
