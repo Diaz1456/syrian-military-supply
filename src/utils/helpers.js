@@ -1,5 +1,4 @@
 const { v4: uuidv4 } = require('uuid');
-const path = require('path');
 
 const CATEGORIES = [
   'Tactical Apparel',
@@ -42,18 +41,6 @@ function parseSort(sort) {
   return map[sort] || { createdAt: -1 };
 }
 
-function parseImages(files) {
-  if (!files || !files.length) return [];
-  return files.map((f) => {
-    const p = f.path || f.secure_url;
-    const isRemote = /^https?:\/\//.test(String(p));
-    return {
-      url: isRemote ? p : `/uploads/${path.basename(p)}`,
-      public_id: f.filename || f.public_id || '',
-    };
-  });
-}
-
 function startOfDay(date = new Date()) {
   const d = new Date(date);
   d.setHours(0, 0, 0, 0);
@@ -72,7 +59,6 @@ module.exports = {
   detectDevice,
   clientIp,
   parseSort,
-  parseImages,
   startOfDay,
   startOfWeek,
 };

@@ -7,9 +7,9 @@ const Feedback = require('../models/Feedback');
 const Admin = require('../models/Admin');
 const { getSettings } = require('../models/Settings');
 const { signToken, requireAdmin } = require('../middleware/auth');
-const { parseProductFiles, parseSlideImage } = require('../middleware/upload');
+const { parseProductFiles, parseSlideImage, finalizeImages, finalizeSingle } = require('../middleware/upload');
 const { destroyCloudinary } = require('../middleware/errorHandler');
-const { CATEGORIES, clientIp, parseImages, startOfDay, startOfWeek } = require('../utils/helpers');
+const { CATEGORIES, clientIp, startOfDay, startOfWeek } = require('../utils/helpers');
 const Slide = require('../models/Slide');
 
 const router = express.Router();
@@ -231,7 +231,7 @@ router.post('/products', requireAdmin, parseProductFiles, async (req, res, next)
   try {
     const data = parseProductFields(req.body);
     if (!data.name) return res.status(400).json({ message: 'Product name is required' });
-    const images = parseImages(req.files);
+    const images = await finalizeImages(req.files);
     if (!images.length) images.push(PLACEHOLDER_FALLBACK_IMG);
     try {
       const product = await Product.create({ ...data, images });
@@ -256,7 +256,7 @@ router.put('/products/:id', requireAdmin, parseProductFiles, async (req, res, ne
     const existing = await Product.findById(req.params.id);
     if (!existing) return res.status(404).json({ message: 'Product not found' });
     const data = parseProductFields(req.body);
-    const newImages = parseImages(req.files);
+    const newImages = await finalizeImages(req.files);
     if (newImages.length) {
       (existing.images || []).forEach((img) => destroyCloudinary(img.public_id));
       data.images = newImages;
@@ -337,7 +337,7 @@ router.post('/slides', requireAdmin, parseSlideImage, async (req, res, next) => 
   try {
     const data = parseSlideFields(req.body);
     if (!data.title) return res.status(400).json({ message: 'Slide title is required' });
-    const image = parseImages(req.file ? [req.file] : [])[0];
+    const image = await finalizeSingle(req.file);
     if (!image) return res.status(400).json({ message: 'Upload a slide image' });
     const slide = await Slide.create({ ...data, image });
     res.status(201).json({ slide });
@@ -354,7 +354,7 @@ router.put('/slides/:id', requireAdmin, parseSlideImage, async (req, res, next) 
     if (!data.title) return res.status(400).json({ message: 'Slide title is required' });
     if (req.file) {
       if (existing.image && existing.image.public_id) destroyCloudinary(existing.image.public_id);
-      data.image = parseImages([req.file])[0];
+      data.image = await finalizeSingle(req.file);
     }
     const slide = await Slide.findByIdAndUpdate(existing._id, { $set: data }, { new: true });
     res.json({ slide });
