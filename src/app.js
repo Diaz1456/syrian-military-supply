@@ -57,6 +57,10 @@ app.get('/api/seed', async (req, res) => {
   }
 });
 
+/* Serve uploaded images (Cloudinary when configured, local fallback via /tmp) */
+const { UPLOAD_DIR } = require('./middleware/upload');
+app.use('/uploads', express.static(UPLOAD_DIR, { maxAge: '1d' }));
+
 /* Serve built React app (client/dist) */
 const clientDist = path.join(__dirname, '..', 'client', 'dist');
 if (fs.existsSync(path.join(clientDist, 'index.html'))) {

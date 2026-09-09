@@ -1,10 +1,12 @@
 const path = require('path');
+const os = require('os');
 const fs = require('fs');
 const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const { cloudinary, isConfigured } = require('../config/cloudinary');
 
 const MAX_IMAGES = 8;
+const UPLOAD_DIR = path.join(os.tmpdir(), 'sms-uploads');
 
 const storage = isConfigured
   ? new CloudinaryStorage({
@@ -17,9 +19,8 @@ const storage = isConfigured
     })
   : multer.diskStorage({
       destination(req, file, cb) {
-        const dir = path.join(__dirname, '..', '..', 'uploads');
-        fs.mkdirSync(dir, { recursive: true });
-        cb(null, dir);
+        fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+        cb(null, UPLOAD_DIR);
       },
       filename(req, file, cb) {
         const ext = path.extname(file.originalname) || '.jpg';
@@ -34,4 +35,4 @@ const upload = multer({
 
 const parseProductFiles = upload.array('images', MAX_IMAGES);
 
-module.exports = { parseProductFiles, MAX_IMAGES };
+module.exports = { parseProductFiles, MAX_IMAGES, UPLOAD_DIR };
