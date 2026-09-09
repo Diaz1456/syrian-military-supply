@@ -4,6 +4,7 @@ const Product = require('../models/Product');
 const Order = require('../models/Order');
 const Feedback = require('../models/Feedback');
 const Visitor = require('../models/Visitor');
+const Slide = require('../models/Slide');
 const { getSettings } = require('../models/Settings');
 const {
   CATEGORIES,
@@ -48,6 +49,15 @@ router.get('/categories', async (req, res, next) => {
       (c) => c.count > 0
     );
     res.json({ categories: list });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/slides', async (req, res, next) => {
+  try {
+    const slides = await Slide.find({ enabled: true }).sort({ sortOrder: 1, createdAt: 1 });
+    res.json({ slides });
   } catch (err) {
     next(err);
   }

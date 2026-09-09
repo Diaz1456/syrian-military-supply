@@ -34,7 +34,7 @@ function Carousel({ items, title, link }) {
   );
 }
 
-const HEROES = [
+const DEFAULT_HEROES = [
   {
     kicker: 'Surplus & Tactical',
     title: 'Field-tested gear. Genuinely sourced.',
@@ -70,8 +70,23 @@ const HEROES = [
   },
 ];
 
+function slideToHero(s) {
+  return {
+    kicker: s.kicker || '',
+    title: s.title,
+    text: s.text || '',
+    cta: s.cta || 'Shop now',
+    link: s.link || '/shop',
+    btn2: s.btn2 || '',
+    link2: s.link2 || '/shop',
+    img: s.image?.url || '',
+    tag: s.tag || '',
+  };
+}
+
 export default function Home() {
   const [heroIdx, setHeroIdx] = useState(0);
+  const [slides, setSlides] = useState([]);
   const [featured, setFeatured] = useState([]);
   const [newArrivals, setNewArrivals] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
@@ -79,14 +94,16 @@ export default function Home() {
   const [deal, setDeal] = useState(null);
   const [stats, setStats] = useState({ count: 0, rating: 0 });
 
-  const hero = HEROES[heroIdx];
+  const heroes = slides.length ? slides.map(slideToHero) : DEFAULT_HEROES;
+  const hero = heroes[Math.min(heroIdx, heroes.length - 1)];
 
   useEffect(() => {
-    const t = setInterval(() => setHeroIdx((i) => (i + 1) % HEROES.length), 7000);
+    const t = setInterval(() => setHeroIdx((i) => (i + 1) % (heroes.length || 1)), 7000);
     return () => clearInterval(t);
-  }, []);
+  }, [heroes.length]);
 
   useEffect(() => {
+    api.get('/slides').then((r) => setSlides(r.data.slides || [])).catch(() => {});
     api.get('/products/featured').then((r) => setFeatured(r.data.featured || [])).catch(() => {});
     api.get('/products', { params: { sort: 'newest', limit: 10 } }).then((r) => setNewArrivals(r.data.products || [])).catch(() => {});
     api.get('/products', { params: { sort: 'popular', limit: 10 } }).then((r) => setBestSellers(r.data.products || [])).catch(() => {});
@@ -113,7 +130,7 @@ export default function Home() {
             <p>{hero.text}</p>
             <div className="hero-ctas">
               <Link to={hero.link} className="btn primary">{hero.cta}</Link>
-              <Link to={hero.link2} className="btn">{hero.btn2}</Link>
+              {hero.btn2 && <Link to={hero.link2} className="btn">{hero.btn2}</Link>}
             </div>
             {deal && (
               <Link to={`/product/${deal._id}`} className="deal-flag">
@@ -125,7 +142,7 @@ export default function Home() {
           </div>
           <div className="hero-media">
             <div className="frame">
-              <img src={hero.img} alt="" />
+              <img src={hero.img || 'https://placehold.co/900x900/2a3124/e6e2d8?text=Field+Gear'} alt="" />
             </div>
             <div className="hero-tag">
               <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" aria-hidden>

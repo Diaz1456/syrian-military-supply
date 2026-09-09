@@ -7,9 +7,10 @@ const Feedback = require('../models/Feedback');
 const Admin = require('../models/Admin');
 const { getSettings } = require('../models/Settings');
 const { signToken, requireAdmin } = require('../middleware/auth');
-const { parseProductFiles } = require('../middleware/upload');
+const { parseProductFiles, parseSlideImage } = require('../middleware/upload');
 const { destroyCloudinary } = require('../middleware/errorHandler');
 const { CATEGORIES, clientIp, parseImages, startOfDay, startOfWeek } = require('../utils/helpers');
+const Slide = require('../models/Slide');
 
 const router = express.Router();
 
@@ -300,6 +301,86 @@ router.patch('/products/bulk', requireAdmin, async (req, res, next) => {
       return res.status(400).json({ message: 'Unknown bulk action' });
     }
     res.json({ message: `Bulk ${action} complete (${ids.length} items)` });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/* ─────────────────────── HERO SLIDESHOW ─────────────────────── */
+
+function parseSlideFields(body) {
+  return {
+    kicker: body.kicker ? String(body.kicker) : '',
+    title: body.title ? String(body.title).trim() : undefined,
+    text: body.text ? String(body.text) : '',
+    cta: body.cta ? String(body.cta) : 'Shop now',
+    link: body.link ? String(body.link) : '/shop',
+    btn2: body.btn2 ? String(body.btn2) : '',
+    link2: body.link2 ? String(body.link2) : '/shop',
+    tag: body.tag ? String(body.tag) : '',
+    sortOrder: parseInt(body.sortOrder, 10) || 0,
+    enabled: body.enabled === 'true' || body.enabled === 'on',
+    updatedAt: new Date(),
+  };
+}
+
+router.get('/slides', requireAdmin, async (req, res, next) => {
+  try {
+    const slides = await Slide.find().sort({ sortOrder: 1, createdAt: 1 });
+    res.json({ slides });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/slides', requireAdmin, parseSlideImage, async (req, res, next) => {
+  try {
+    const data = parseSlideFields(req.body);
+    if (!data.title) return res.status(400).json({ message: 'Slide title is required' });
+    const image = parseImages(req.file ? [req.file] : [])[0];
+    if (!image) return res.status(400).json({ message: 'Upload a slide image' });
+    const slide = await Slide.create({ ...data, image });
+    res.status(201).json({ slide });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.put('/slides/:id', requireAdmin, parseSlideImage, async (req, res, next) => {
+  try {
+    const existing = await Slide.findById(req.params.id);
+    if (!existing) return res.status(404).json({ message: 'Slide not found' });
+    const data = parseSlideFields(req.body);
+    if (!data.title) return res.status(400).json({ message: 'Slide title is required' });
+    if (req.file) {
+      if (existing.image && existing.image.public_id) destroyCloudinary(existing.image.public_id);
+      data.image = parseImages([req.file])[0];
+    }
+    const slide = await Slide.findByIdAndUpdate(existing._id, { $set: data }, { new: true });
+    res.json({ slide });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.patch('/slides/:id/toggle', requireAdmin, async (req, res, next) => {
+  try {
+    const slide = await Slide.findById(req.params.id);
+    if (!slide) return res.status(404).json({ message: 'Slide not found' });
+    slide.enabled = !slide.enabled;
+    await slide.save();
+    res.json({ slide });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.delete('/slides/:id', requireAdmin, async (req, res, next) => {
+  try {
+    const slide = await Slide.findByIdAndDelete(req.params.id);
+    if (!slide) return res.status(404).json({ message: 'Slide not found' });
+    if (slide.image && slide.image.public_id) destroyCloudinary(slide.image.public_id);
+    res.json({ message: 'Slide deleted' });
   } catch (err) {
     next(err);
   }

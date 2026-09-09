@@ -24,6 +24,7 @@ import Orders from './admin/Orders';
 import FeedbackLog from './admin/FeedbackLog';
 import Visitors from './admin/Visitors';
 import AdminSettings from './admin/AdminSettings';
+import AdminSlides from './admin/AdminSlides';
 import ChangePassword from './admin/ChangePassword';
 
 const PublicLayout = ({ children }) => (
@@ -127,6 +128,7 @@ export default function App() {
         <Route path="feedback" element={<FeedbackLog />} />
         <Route path="visitors" element={<Visitors />} />
         <Route path="settings" element={<AdminSettings />} />
+        <Route path="slides" element={<AdminSlides />} />
         <Route path="change-password" element={<ChangePassword />} />
       </Route>
       <Route

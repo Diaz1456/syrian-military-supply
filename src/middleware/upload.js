@@ -34,5 +34,6 @@ const upload = multer({
 });
 
 const parseProductFiles = upload.array('images', MAX_IMAGES);
+const parseSlideImage = upload.single('image');
 
-module.exports = { parseProductFiles, MAX_IMAGES, UPLOAD_DIR };
+module.exports = { parseProductFiles, parseSlideImage, MAX_IMAGES, UPLOAD_DIR };

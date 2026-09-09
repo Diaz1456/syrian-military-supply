@@ -21,6 +21,7 @@ require('./models/Visitor');
 require('./models/Feedback');
 require('./models/Admin');
 require('./models/Settings');
+require('./models/Slide');
 
 const app = express();
 
