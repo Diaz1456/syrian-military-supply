@@ -4,19 +4,22 @@ import { useCart } from '../context/CartContext';
 import { useVisit } from '../context/VisitContext';
 import SearchBar from './SearchBar';
 
-export default function Header() {
+export default function Header({ settings }) {
   const { totalCount } = useCart();
   const { rank, visits } = useVisit();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
   const close = () => setOpen(false);
+  const threshold = settings.freeShippingThreshold ?? 150;
+  const storeName = settings.storeName || 'Syrian Military Supply';
+  const tagline = settings.tagline || 'Surplus · Tactical · Local Crafts';
 
   return (
     <header className="site-header">
       <div className="topbar">
         <div className="container">
-          <span className="topbar-left">Free shipping $150+</span>
+          <span className="topbar-left">Free shipping ${threshold}+</span>
           <span className="topbar-right">
             <span className="muted" style={{ color: '#6f756e' }}>{rank.icon}</span>
             {rank.name} · {visits} visits
@@ -32,8 +35,8 @@ export default function Header() {
         <Link to="/" className="brand" onClick={close}>
           <span className="brand-mark">★</span>
           <span>
-            <div className="brand-name">Syrian Military Supply</div>
-            <div className="brand-sub">Surplus · Tactical · Local Crafts</div>
+            <div className="brand-name">{storeName}</div>
+            <div className="brand-sub">{tagline}</div>
           </span>
         </Link>
 

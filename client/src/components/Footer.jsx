@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import { useVisit } from '../context/VisitContext';
 import Newsletter from './Newsletter';
 
-export default function Footer({ showNewsletter }) {
+export default function Footer({ settings, showNewsletter }) {
   const { rank, visits } = useVisit();
   const pct = Math.min(100, (visits / 25) * 100);
+  const storeName = settings?.storeName || 'Syrian Military Supply';
+  const tagline = settings?.tagline || 'Surplus · Tactical · Local';
 
   return (
     <>
@@ -17,8 +19,8 @@ export default function Footer({ showNewsletter }) {
               <div className="brand-copy">
                 <span className="brand-mark">★</span>
                 <div>
-                  <div className="brand-name" style={{ color: '#f2f3f0' }}>Syrian Military Supply</div>
-                  <div className="brand-sub" style={{ color: '#8d928f' }}>Surplus · Tactical · Local</div>
+                  <div className="brand-name" style={{ color: '#f2f3f0' }}>{storeName}</div>
+                  <div className="brand-sub" style={{ color: '#8d928f' }}>{tagline}</div>
                 </div>
               </div>
               <p className="muted mt-16" style={{ fontSize: '0.86rem', maxWidth: 300 }}>
@@ -52,7 +54,7 @@ export default function Footer({ showNewsletter }) {
             </div>
           </div>
           <div className="footer-bottom">
-            <span>© {new Date().getFullYear()} Syrian Military Supply</span>
+            <span>© {new Date().getFullYear()} {storeName}</span>
             <span>Hand-inspected. Delivered.</span>
           </div>
         </div>

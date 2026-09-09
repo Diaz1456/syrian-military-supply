@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import api from './api';
 
 import Header from './components/Header';
@@ -27,23 +27,24 @@ import AdminSettings from './admin/AdminSettings';
 import AdminSlides from './admin/AdminSlides';
 import ChangePassword from './admin/ChangePassword';
 
-const PublicLayout = ({ children }) => (
+const PublicLayout = ({ settings, children }) => (
   <>
-    <Header />
+    <Header settings={settings} />
     {children}
-    <Footer />
+    <Footer settings={settings} />
   </>
 );
 
 export default function App() {
   const [settings, setSettings] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     api
       .get('/settings/public')
       .then((res) => setSettings(res.data))
       .catch(() => {});
-  }, []);
+  }, [location.pathname]);
 
   return (
     <Routes>
@@ -103,14 +104,14 @@ export default function App() {
           </PublicLayout>
         }
       />
-      <Route
-        path="/contact"
-        element={
-          <PublicLayout>
-            <Contact />
-          </PublicLayout>
-        }
-      />
+<Route
+          path="/contact"
+          element={
+            <PublicLayout settings={settings}>
+              <Contact settings={settings} />
+            </PublicLayout>
+          }
+        />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route
         path="/admin"

@@ -12,7 +12,7 @@ const REASONS = [
   'General feedback',
 ];
 
-export default function Contact() {
+export default function Contact({ settings }) {
   const [reason, setReason] = useState(REASONS[0]);
   const [contact, setContact] = useState({ name: '', email: '' });
   const [rating, setRating] = useState(0);
@@ -91,8 +91,8 @@ export default function Contact() {
 
               <div className="panel">
                 <h3>Direct line</h3>
-                <div className="summary-row"><span>Email</span><span className="sand">contact@syrianmilitarysupply.com</span></div>
-                <div className="summary-row"><span>Hours</span><span className="sand">Mon–Sat: 09:00–19:00</span></div>
+                <div className="summary-row"><span>Email</span><span className="sand">{settings?.contactEmail || 'contact@syrianmilitarysupply.com'}</span></div>
+                <div className="summary-row"><span>Hours</span><span className="sand">{settings?.hoursOfOperation || 'Mon–Sat: 09:00–19:00'}</span></div>
                 <div className="summary-row"><span>Base</span><span className="sand">Souk Central, Damascus</span></div>
               </div>
             </div>
