@@ -6,8 +6,8 @@ export default function Cart({ settings = {} }) {
   const { items, totalCount, subtotal, updateQty, removeFromCart, clearCart, notice } = useCart();
   const navigate = useNavigate();
 
-  const flat = settings.shippingFlatRate ?? 9.99;
-  const threshold = settings.freeShippingThreshold ?? 150;
+  const flat = settings?.shippingFlatRate ?? 9.99;
+  const threshold = settings?.freeShippingThreshold ?? 150;
   const shipping = items.length === 0 || subtotal >= threshold ? 0 : flat;
   const progress = Math.min(100, (subtotal / threshold) * 100);
 
@@ -59,7 +59,7 @@ export default function Cart({ settings = {} }) {
             <aside className="summary-box">
               <h3 style={{ fontFamily: 'var(--font-head)', textTransform: 'uppercase', letterSpacing: 0.06, marginBottom: 12 }}>Order Summary</h3>
               <div className="summary-row"><span>Subtotal</span><span>${subtotal.toFixed(2)}</span></div>
-              <div className="summary-row"><span>Shipping ({settings.currency || 'USD'})</span><span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span></div>
+              <div className="summary-row"><span>Shipping ({settings?.currency || 'USD'})</span><span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span></div>
               <div className="summary-row total"><span>Total</span><span>${(subtotal + shipping).toFixed(2)}</span></div>
 
               {subtotal < threshold ? (

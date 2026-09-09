@@ -11,9 +11,9 @@ export default function Header({ settings }) {
   const navigate = useNavigate();
 
   const close = () => setOpen(false);
-  const threshold = settings.freeShippingThreshold ?? 150;
-  const storeName = settings.storeName || 'Syrian Military Supply';
-  const tagline = settings.tagline || 'Surplus · Tactical · Local Crafts';
+  const threshold = settings?.freeShippingThreshold ?? 150;
+  const storeName = settings?.storeName || 'Syrian Military Supply';
+  const tagline = settings?.tagline || 'Surplus · Tactical · Local Crafts';
 
   return (
     <header className="site-header">

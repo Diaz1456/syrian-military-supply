@@ -15,8 +15,8 @@ export default function Checkout({ settings = {} }) {
   const [error, setError] = useState('');
   const [orderId, setOrderId] = useState(null);
 
-  const flat = settings.shippingFlatRate ?? 9.99;
-  const threshold = settings.freeShippingThreshold ?? 150;
+  const flat = settings?.shippingFlatRate ?? 9.99;
+  const threshold = settings?.freeShippingThreshold ?? 150;
   const shipping = subtotal >= threshold ? 0 : flat;
   const total = subtotal + shipping;
 
