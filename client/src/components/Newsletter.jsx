@@ -22,8 +22,8 @@ export default function Newsletter() {
     <section className="newsletter">
       <div className="container inner">
         <div>
-          <h3>Stay in the loop</h3>
-          <p>New gear drops, sales and restock alerts. No spam — unsubscribe anytime.</p>
+          <h3>Field updates</h3>
+          <p>New gear, sales and restocks.</p>
         </div>
         {done ? (
           <p className="good" style={{ fontFamily: 'var(--font-head)', fontWeight: 700 }}>✔ Signed up. Welcome aboard.</p>

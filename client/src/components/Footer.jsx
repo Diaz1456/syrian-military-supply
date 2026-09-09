@@ -21,8 +21,8 @@ export default function Footer({ showNewsletter }) {
                   <div className="brand-sub" style={{ color: '#8d928f' }}>Surplus · Tactical · Local</div>
                 </div>
               </div>
-              <p className="muted mt-16" style={{ fontSize: '0.88rem', maxWidth: 300 }}>
-                Genuine surplus, field-grade tactical gear and handcrafted local pieces.
+              <p className="muted mt-16" style={{ fontSize: '0.86rem', maxWidth: 300 }}>
+                Genuine surplus, tactical gear and local crafts.
               </p>
             </div>
             <div>
@@ -53,7 +53,7 @@ export default function Footer({ showNewsletter }) {
           </div>
           <div className="footer-bottom">
             <span>© {new Date().getFullYear()} Syrian Military Supply</span>
-            <span>Inspected by hand. Shipped from the base.</span>
+            <span>Hand-inspected. Delivered.</span>
           </div>
         </div>
       </footer>

@@ -15,9 +15,9 @@ export default function About() {
       <section className="hero">
         <div className="container hero-inner" style={{ padding: '56px 0 64px' }}>
           <div className="hero-content">
-            <span className="hero-kicker">About us</span>
-            <h1>Surplus with a story. Gear with a conscience.</h1>
-            <p>Keeping genuine military surplus and time-honored local crafts in circulation — supporting workshops and collectors across Syria.</p>
+            <span className="hero-kicker">About</span>
+            <h1>Surplus with a story.</h1>
+            <p>Genuine military surplus, tactical gear and local crafts — sourced across Syria.</p>
           </div>
         </div>
       </section>
@@ -28,13 +28,10 @@ export default function About() {
             <div>
               <h2 className="section-title">The story</h2>
               <p className="lead mt-16" style={{ maxWidth: 560 }}>
-                It began with a box of surplus helmets in a Damascus storeroom. Today our depot connects soldiers' surplus, modern tactical suppliers and the craftsmen who have forged and stitched here for generations.
+                It began with a box of surplus helmets in a Damascus storeroom. Today we connect soldiers' surplus, tactical suppliers and the craftsmen who have forged here for generations.
               </p>
-              <p className="muted" style={{ maxWidth: 560 }}>
-                Every listing is hand-inspected and honestly described — because trust is the one piece of gear you can't buy off a shelf.
-              </p>
-              <p className="mt-16" style={{ maxWidth: 560 }}>
-                We're proud of two living traditions: <b className="sand">Damascus steel</b> knife-smithing and <b className="sand">traditional embroidery</b>. Every Damascus knife comes from working smiths using folded-steel methods passed down for centuries.
+              <p className="muted mt-16" style={{ maxWidth: 560 }}>
+                Every listing is hand-inspected and honestly described. And we're proud of two living traditions: <b className="sand">Damascus steel</b> and <b className="sand">traditional embroidery</b>.
               </p>
               <div className="row mt-24" style={{ gap: 12 }}>
                 <Link to="/shop?category=Local%20Crafts" className="btn primary">Shop local crafts</Link>
@@ -47,7 +44,7 @@ export default function About() {
               <div className="info-strip" style={{ gridTemplateColumns: '1fr 1fr' }}>
                 <div className="info-item"><div className="k">2016</div><div className="t">Founded</div></div>
                 <div className="info-item"><div className="k">9</div><div className="t">Categories</div></div>
-                <div className="info-item"><div className="k">100%</div><div className="t">Hand-inspected</div></div>
+                <div className="info-item"><div className="k">100%</div><div className="t">Inspected</div></div>
                 <div className="info-item"><div className="k">Local</div><div className="t">Forge &amp; workshop</div></div>
               </div>
             </div>

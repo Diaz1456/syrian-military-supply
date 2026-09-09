@@ -36,37 +36,37 @@ function Carousel({ items, title, link }) {
 
 const HEROES = [
   {
-    kicker: 'Surplus & Tactical Gear',
-    title: 'Field-tested gear, genuinely sourced.',
-    text: 'Vintage surplus, modern tactical kit and handcrafted local pieces — inspected by hand, shipped from the base.',
+    kicker: 'Surplus & Tactical',
+    title: 'Field-tested gear. Genuinely sourced.',
+    text: 'Vintage surplus, modern tactical kit, local craft.',
     cta: 'Shop all gear',
     link: '/shop',
     btn2: 'Local crafts',
     link2: '/shop?category=Local%20Crafts',
     img: 'https://picsum.photos/seed/sms-gear/900/900',
-    tag: 'Hand-inspected before every shipment',
+    tag: 'Hand-inspected before shipping',
   },
   {
     kicker: 'Damascus Steel',
     title: 'Forged here. Trusted everywhere.',
-    text: 'Combat knives from working Damascus smiths, using folded-steel methods passed down for centuries.',
+    text: 'Hand-forged knives from working Damascus smiths.',
     cta: 'Shop knives & tools',
     link: '/shop?category=Knives%20%26%20Tools',
     btn2: 'Surplus',
     link2: '/shop?category=Surplus',
     img: 'https://picsum.photos/seed/sms-knife/900/900',
-    tag: 'Forged & finished by local workshops',
+    tag: 'Forged by local workshops',
   },
   {
     kicker: 'Survival Essentials',
     title: 'Stock up. Stay ready.',
-    text: 'Medical, survival and load-out essentials for the field. Free shipping on orders over $150.',
+    text: 'Survival, medical and load-out essentials.',
     cta: 'Shop survival & medical',
     link: '/shop?category=Medical%20%26%20Survival',
     btn2: 'Gear & packs',
     link2: '/shop?category=Gear%20%26%20Packs',
     img: 'https://picsum.photos/seed/sms-survival/900/900',
-    tag: 'Field-validated essentials',
+    tag: 'Field-ready essentials',
   },
 ];
 
@@ -175,8 +175,8 @@ export default function Home() {
           <div className="info-strip">
             <div className="info-item"><div className="k">{stats.count || '—'}</div><div className="t">Listings</div></div>
             <div className="info-item"><div className="k">{stats.rating ? stats.rating.toFixed(1) : '—'}</div><div className="t">Rating</div></div>
-            <div className="info-item"><div className="k">100%</div><div className="t">Hand-inspected</div></div>
-            <div className="info-item"><div className="k">Local</div><div className="t">Forged & stitched locally</div></div>
+            <div className="info-item"><div className="k">100%</div><div className="t">Inspected</div></div>
+            <div className="info-item"><div className="k">Local</div><div className="t">Forged &amp; stitched</div></div>
           </div>
         </div>
       </section>
@@ -191,12 +191,12 @@ export default function Home() {
         <div className="container">
           <div className="about-grid">
             <div>
-              <h2 className="section-title">From the home base</h2>
+              <h2 className="section-title">The base</h2>
               <p className="lead mt-16" style={{ maxWidth: 540 }}>
-                We source genuine military surplus, field-grade tactical gear and the finest craft pieces Damascus has to offer.
+                Surplus, tactical gear and Damascus craft — sourced and hand-inspected.
               </p>
               <p className="muted" style={{ maxWidth: 540 }}>
-                Every item is inspected by hand before it ships. Buying local supports workshops that have kept their craft alive for generations.
+                Buying local keeps centuries-old workshops alive.
               </p>
               <div className="row mt-24" style={{ gap: 12 }}>
                 <Link to="/about" className="btn">Our story</Link>
@@ -204,12 +204,11 @@ export default function Home() {
               </div>
             </div>
             <div className="shadow-box">
-              <h3 style={{ fontSize: '1rem', marginBottom: 12 }}>Why choose us</h3>
+              <h3 style={{ fontSize: '1rem', marginBottom: 12 }}>Why us</h3>
               <ul>
-                <li>Inspection scores on every listing</li>
-                <li>Flat-rate shipping — free over $150</li>
-                <li>Rank rewards for repeat visitors</li>
-                <li>Verified customer reviews</li>
+                <li>Inspection scores on every item</li>
+                <li>Free shipping over $150</li>
+                <li>Rank rewards for repeat visits</li>
               </ul>
             </div>
           </div>

@@ -16,10 +16,10 @@ export default function Header() {
     <header className="site-header">
       <div className="topbar">
         <div className="container">
-          <span className="topbar-left">Free shipping over $150</span>
+          <span className="topbar-left">Free shipping $150+</span>
           <span className="topbar-right">
-            <span className="muted" style={{ color: '#9aa1a9' }}>{rank.icon}</span>
-            {rank.name} · {visits} visit{visits === 1 ? '' : 's'}
+            <span className="muted" style={{ color: '#6f756e' }}>{rank.icon}</span>
+            {rank.name} · {visits} visits
           </span>
         </div>
       </div>
