@@ -27,7 +27,7 @@ export default function AdminLayout() {
         <div className="admin-brand">
           <span className="logo">⛨</span>
           <div>
-            <div style={{ fontFamily: 'var(--font-head)', letterSpacing: '0.06em', fontWeight: 700 }}>COMMAND</div>
+            <div style={{ fontFamily: 'var(--font-head)', letterSpacing: '0.06em', fontWeight: 700 }}>Admin</div>
             <div style={{ fontSize: '0.7rem', color: 'var(--muted)' }}>Syrian Military Supply</div>
           </div>
         </div>

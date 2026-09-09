@@ -47,13 +47,16 @@ export default function Checkout({ settings = {} }) {
     <section className="section">
       <div className="container">
         <div className="section-head">
-          <h1 className="section-title flag-accent">Checkout — Deploy</h1>
+          <div>
+            <span className="head-kicker">Secure checkout</span>
+            <h1 className="section-title">Checkout</h1>
+          </div>
         </div>
 
         <div className="checkout-grid">
           <form onSubmit={placeOrder}>
             <div className="panel">
-              <h3>Shipping / Billing Details</h3>
+              <h3>Contact &amp; shipping</h3>
               <div className="form-grid">
                 <div className="form-group"><label>Full Name *</label><input value={form.name} onChange={set('name')} required /></div>
                 <div className="form-group"><label>Phone</label><input value={form.phone} onChange={set('phone')} /></div>
@@ -73,18 +76,18 @@ export default function Checkout({ settings = {} }) {
               <div className="filter-list">
                 <label>
                   <input type="radio" name="pay" defaultChecked />
-                  💳 Card / Wallet <span className="muted">(Demo — order recorded, no charge)</span>
+                  Card / Wallet <span className="muted">(Demo — no charge)</span>
                 </label>
                 <label>
                   <input type="radio" name="pay" />
-                  🚚 Cash on Delivery
+                  Cash on delivery
                 </label>
               </div>
             </div>
 
             {error && <div className="field-error mt-8">{error}</div>}
             <button className="btn primary block mt-16" type="submit" disabled={placing || items.length === 0}>
-              {placing ? 'Transmitting Order…' : `Place Order · $${total.toFixed(2)}`}
+              {placing ? 'Placing order…' : `Place order · $${total.toFixed(2)}`}
             </button>
           </form>
 
@@ -99,8 +102,8 @@ export default function Checkout({ settings = {} }) {
             <div className="summary-row"><span>Subtotal</span><span>${subtotal.toFixed(2)}</span></div>
             <div className="summary-row"><span>Shipping</span><span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span></div>
             <div className="summary-row total"><span>Total</span><span>${total.toFixed(2)}</span></div>
-            {items.length === 0 && <p className="muted mt-8">Your loadout is empty. <Link to="/shop">Back to Armory</Link></p>}
-            {orderId && <p className="mt-16" style={{ color: 'var(--good)' }}>✔ Order {orderId} transmitted — rerouting to confirmation…</p>}
+            {items.length === 0 && <p className="muted mt-8">Your cart is empty. <Link to="/shop">Shop</Link></p>}
+            {orderId && <p className="mt-16" style={{ color: 'var(--good)' }}>✔ Order {orderId} placed — redirecting…</p>}
           </aside>
         </div>
       </div>

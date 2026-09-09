@@ -52,7 +52,7 @@ export default function Visitors() {
   return (
     <>
       <div className="admin-topbar">
-        <h1>Visitor Log — Surveillance</h1>
+        <h1>Visitor Log</h1>
         <button className="btn small danger" onClick={clearAll}>Clear All</button>
       </div>
 

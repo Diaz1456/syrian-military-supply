@@ -8,12 +8,15 @@ function Carousel({ items, title, link }) {
   const ref = React.useRef(null);
   const scroll = (dir) => {
     const el = ref.current;
-    if (el) el.scrollBy({ left: dir * 290, behavior: 'smooth' });
+    if (el) el.scrollBy({ left: dir * 280, behavior: 'smooth' });
   };
   return (
     <section className="section" style={{ paddingTop: 0 }}>
       <div className="section-head">
-        <h2 className="section-title flag-accent">{title}</h2>
+        <div>
+          <span className="head-kicker">Collection</span>
+          <h2 className="section-title">{title}</h2>
+        </div>
         <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
           {link && <Link className="section-link" to={link}>See all →</Link>}
           <div className="carousel-nav">
@@ -33,34 +36,37 @@ function Carousel({ items, title, link }) {
 
 const HEROES = [
   {
-    kicker: 'Genuine Salty Surplus Stock',
-    title: 'FIELD-TESTED GEAR FOR TOUGH MISSIONS',
-    text: 'From vintage surplus to modern tactical rigs — sourced, inspected and shipped from our Damascus depot.',
-    cta: 'Browse the Armory',
+    kicker: 'Surplus & Tactical Gear',
+    title: 'Field-tested gear, genuinely sourced.',
+    text: 'Vintage surplus, modern tactical kit and handcrafted local pieces — inspected by hand, shipped from the base.',
+    cta: 'Shop all gear',
     link: '/shop',
-    btn2: 'Local Crafts',
+    btn2: 'Local crafts',
     link2: '/shop?category=Local%20Crafts',
-    img: 'photo-1607631568010-a87245c0daf8',
+    img: 'https://picsum.photos/seed/sms-gear/900/900',
+    tag: 'Hand-inspected before every shipment',
   },
   {
-    kicker: 'Hand-Forged Local Heritage',
-    title: 'DAMASCUS STEEL. DAMASCUS TRADITION.',
-    text: 'Combat knives forged by local smiths using the same folded-steel craft that made Damascus legend.',
-    cta: 'Shop Local Crafts',
-    link: '/shop?category=Local%20Crafts',
-    btn2: 'Knives & Tools',
-    link2: '/shop?category=Knives%20%26%20Tools',
-    img: 'photo-1573921313054-b6e7b6b916d2',
-  },
-  {
-    kicker: 'Every Mission Needs A Plan',
-    title: 'STOCK UP & STAY READY',
-    text: 'Medical, survival and load-out essentials for the field. Free shipping on orders over your threshold amount.',
-    cta: 'Shop Medical & Survival',
-    link: '/shop?category=Medical%20%26%20Survival',
-    btn2: 'Ammo & Storage',
+    kicker: 'Damascus Steel',
+    title: 'Forged here. Trusted everywhere.',
+    text: 'Combat knives from working Damascus smiths, using folded-steel methods passed down for centuries.',
+    cta: 'Shop knives & tools',
+    link: '/shop?category=Knives%20%26%20Tools',
+    btn2: 'Surplus',
     link2: '/shop?category=Surplus',
-    img: 'photo-1517649763962-0c623066013b',
+    img: 'https://picsum.photos/seed/sms-knife/900/900',
+    tag: 'Forged & finished by local workshops',
+  },
+  {
+    kicker: 'Survival Essentials',
+    title: 'Stock up. Stay ready.',
+    text: 'Medical, survival and load-out essentials for the field. Free shipping on orders over $150.',
+    cta: 'Shop survival & medical',
+    link: '/shop?category=Medical%20%26%20Survival',
+    btn2: 'Gear & packs',
+    link2: '/shop?category=Gear%20%26%20Packs',
+    img: 'https://picsum.photos/seed/sms-survival/900/900',
+    tag: 'Field-validated essentials',
   },
 ];
 
@@ -76,7 +82,7 @@ export default function Home() {
   const hero = HEROES[heroIdx];
 
   useEffect(() => {
-    const t = setInterval(() => setHeroIdx((i) => (i + 1) % HEROES.length), 6000);
+    const t = setInterval(() => setHeroIdx((i) => (i + 1) % HEROES.length), 7000);
     return () => clearInterval(t);
   }, []);
 
@@ -100,9 +106,9 @@ export default function Home() {
   return (
     <>
       <section className="hero">
-        <div className="container">
+        <div className="container hero-inner">
           <div className="hero-content">
-            <div className="hero-kicker">{hero.kicker}</div>
+            <span className="hero-kicker">{hero.kicker}</span>
             <h1>{hero.title}</h1>
             <p>{hero.text}</p>
             <div className="hero-ctas">
@@ -111,19 +117,42 @@ export default function Home() {
             </div>
             {deal && (
               <Link to={`/product/${deal._id}`} className="deal-flag">
-                <span>⚡ Mission of the Day</span>
+                <span className="now">Deal of the day</span>
                 <b>{deal.name}</b>
                 <b>${(deal.salePrice || deal.price).toFixed(2)}</b>
               </Link>
             )}
           </div>
+          <div className="hero-media">
+            <div className="frame">
+              <img src={hero.img} alt="" />
+            </div>
+            <div className="hero-tag">
+              <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" aria-hidden>
+                <path d="M20 6 9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {hero.tag}
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className="section" style={{ paddingBottom: 8 }}>
+      {featured.length > 0 && (
+        <section className="section" style={{ paddingBottom: 8 }}>
+          <div className="container">
+            <Carousel items={featured} title="Featured" link="/shop" />
+          </div>
+        </section>
+      )}
+
+      <section className="section alt" style={{ paddingTop: 44, paddingBottom: 44 }}>
         <div className="container">
           <div className="section-head">
-            <h2 className="section-title flag-accent">Division Categories</h2>
+            <div>
+              <span className="head-kicker">Divisions</span>
+              <h2 className="section-title">Categories</h2>
+            </div>
+            <Link className="section-link" to="/shop">See all →</Link>
           </div>
           <div className="grid cats">
             {categories.map((c) => (
@@ -144,39 +173,43 @@ export default function Home() {
       <section className="section alt" style={{ marginTop: 34 }}>
         <div className="container">
           <div className="info-strip">
-            <div className="info-item"><div className="k">{stats.count}</div><div className="t">Gear Listings</div></div>
-            <div className="info-item"><div className="k">{stats.rating ? stats.rating.toFixed(1) : '—'}</div><div className="t">Avg Field Report Rating</div></div>
-            <div className="info-item"><div className="k">100%</div><div className="t">Hand-Inspected</div></div>
-            <div className="info-item"><div className="k">Local</div><div className="t">Forged & Stitched Locally</div></div>
+            <div className="info-item"><div className="k">{stats.count || '—'}</div><div className="t">Listings</div></div>
+            <div className="info-item"><div className="k">{stats.rating ? stats.rating.toFixed(1) : '—'}</div><div className="t">Rating</div></div>
+            <div className="info-item"><div className="k">100%</div><div className="t">Hand-inspected</div></div>
+            <div className="info-item"><div className="k">Local</div><div className="t">Forged & stitched locally</div></div>
           </div>
         </div>
       </section>
 
       <section className="section" style={{ paddingBottom: 8 }}>
         <div className="container">
-          {bestSellers.length > 0 && <Carousel items={bestSellers} title="Best Sellers — Most Deployed" link="/shop?sort=popular" />}
+          {bestSellers.length > 0 && <Carousel items={bestSellers} title="Best Sellers" link="/shop?sort=popular" />}
         </div>
       </section>
 
-      <section className="section" style={{ paddingTop: 0 }}>
+      <section className="section" style={{ paddingTop: 0, paddingBottom: 8 }}>
         <div className="container">
           <div className="about-grid">
-            <div className="history-block">
-              <h3 className="section-title flag-accent" style={{ marginBottom: 14 }}>From the Home Base</h3>
-              <p className="lead">We source genuine military surplus, field-grade tactical gear and the finest dustrial-craft pieces Damascus has to offer.</p>
-              <p className="muted mt-16">Every item is inspected by hand before it ships. When you buy local crafts — Damascus knives, traditional embroidery patches — you're supporting workshops that have kept their craft alive for generations.</p>
-              <div className="row mt-16" style={{ gap: 12 }}>
-                <Link to="/about" className="btn">Read Our Story</Link>
-                <Link to="/contact" className="btn ghost">Leave A Field Report</Link>
+            <div>
+              <h2 className="section-title">From the home base</h2>
+              <p className="lead mt-16" style={{ maxWidth: 540 }}>
+                We source genuine military surplus, field-grade tactical gear and the finest craft pieces Damascus has to offer.
+              </p>
+              <p className="muted" style={{ maxWidth: 540 }}>
+                Every item is inspected by hand before it ships. Buying local supports workshops that have kept their craft alive for generations.
+              </p>
+              <div className="row mt-24" style={{ gap: 12 }}>
+                <Link to="/about" className="btn">Our story</Link>
+                <Link to="/contact" className="btn ghost">Contact</Link>
               </div>
             </div>
             <div className="shadow-box">
-              <h3 style={{ textTransform: 'uppercase', fontSize: '1.15rem', marginBottom: 12 }}>Why Operators Choose Us</h3>
-              <ul className="muted" style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <li>⚙ Real inspection scores on every listing</li>
-                <li>🚚 Flat-rate shipping — free over thresholds</li>
-                <li>🪖 Rank rewards for repeat visitors</li>
-                <li>⭐ Field Report reviews from other operators</li>
+              <h3 style={{ fontSize: '1rem', marginBottom: 12 }}>Why choose us</h3>
+              <ul>
+                <li>Inspection scores on every listing</li>
+                <li>Flat-rate shipping — free over $150</li>
+                <li>Rank rewards for repeat visitors</li>
+                <li>Verified customer reviews</li>
               </ul>
             </div>
           </div>

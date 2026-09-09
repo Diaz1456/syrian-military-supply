@@ -15,15 +15,19 @@ export default function Cart({ settings = {} }) {
     <section className="section">
       <div className="container">
         <div className="section-head">
-          <h1 className="section-title flag-accent">Your Loadout</h1>
-          <span className="muted">{totalCount} item{totalCount === 1 ? '' : 's'} secured</span>
+          <div>
+            <span className="head-kicker">Cart</span>
+            <h1 className="section-title">Your cart</h1>
+          </div>
+          <span className="muted">{totalCount} item{totalCount === 1 ? '' : 's'}</span>
         </div>
 
         {items.length === 0 ? (
           <div className="empty-state">
-            <h3 style={{ textTransform: 'uppercase' }}>Cart is a ghost town</h3>
-            <p className="muted mt-8">No gear staged for deployment yet.</p>
-            <Link to="/shop" className="btn primary mt-16">Hit the Armory</Link>
+            <div className="icon">🛍️</div>
+            <h3>Your cart is empty</h3>
+            <p className="muted mt-8">No gear staged yet.</p>
+            <Link to="/shop" className="btn primary mt-16">Browse the shop</Link>
           </div>
         ) : (
           <div className="cart-layout">
@@ -67,8 +71,8 @@ export default function Cart({ settings = {} }) {
                 <p className="muted mt-16" style={{ fontSize: '0.85rem' }}>Free shipping unlocked ✔</p>
               )}
 
-              <button className="btn primary block mt-16" onClick={() => navigate('/checkout')}>Proceed to Checkout</button>
-              <button className="btn ghost block mt-8" onClick={clearCart}>Clear Loadout</button>
+              <button className="btn primary block mt-16" onClick={() => navigate('/checkout')}>Checkout</button>
+              <button className="btn ghost block mt-8" onClick={clearCart}>Clear cart</button>
             </aside>
           </div>
         )}

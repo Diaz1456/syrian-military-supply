@@ -9,7 +9,7 @@ const REASONS = [
   'Shipping / delivery',
   'Order or payment issue',
   'Local crafts — Damascus steel / embroidery',
-  'General feedback about the store',
+  'General feedback',
 ];
 
 export default function Contact() {
@@ -22,12 +22,12 @@ export default function Contact() {
 
   const submit = async (e) => {
     e.preventDefault();
-    if (!rating) return setError('Rate your experience (1–5 stars) before submitting.');
+    if (!rating) return setError('Please rate your experience before sending.');
     setStatus(null);
     setError('');
     try {
       await api.post('/feedback', {
-        name: contact.name || 'Anonymous Operator',
+        name: contact.name || 'Anonymous',
         email: contact.email,
         rating,
         message,
@@ -48,7 +48,10 @@ export default function Contact() {
       <section className="section">
         <div className="container">
           <div className="section-head">
-            <h1 className="section-title flag-accent">Contact & Field Reports</h1>
+            <div>
+              <span className="head-kicker">Contact</span>
+              <h1 className="section-title">Get in touch</h1>
+            </div>
           </div>
 
           <div className="checkout-grid">
@@ -56,59 +59,59 @@ export default function Contact() {
               <div className="panel">
                 {status ? (
                   <div>
-                    <h3 style={{ color: 'var(--good)' }}>✔ Transmission received</h3>
-                    <p className="muted mt-8">Your field report is logged with command. Expect a reply soon.</p>
+                    <h3 style={{ color: 'var(--good)' }}>✔ Message received</h3>
+                    <p className="muted mt-8">Thanks — we'll reply soon.</p>
                   </div>
                 ) : (
                   <form onSubmit={submit}>
-                    <h3>Leave Feedback — Rate Your Experience</h3>
+                    <h3>Send us a message</h3>
                     <div className="form-grid mt-16">
                       <div className="form-group full">
-                        <label>Subject</label>
+                        <label>Topic</label>
                         <select value={reason} onChange={(e) => setReason(e.target.value)}>
                           {REASONS.map((r) => <option key={r}>{r}</option>)}
                         </select>
                       </div>
-                      <div className="form-group"><label>Name</label><input value={contact.name} onChange={(e) => setContact({ ...contact, name: e.target.value })} placeholder="Operator name" /></div>
+                      <div className="form-group"><label>Name</label><input value={contact.name} onChange={(e) => setContact({ ...contact, name: e.target.value })} placeholder="Your name" /></div>
                       <div className="form-group"><label>Email</label><input type="email" value={contact.email} onChange={(e) => setContact({ ...contact, email: e.target.value })} placeholder="For replies" /></div>
                       <div className="form-group full">
-                        <label>Experience Rating</label>
+                        <label>Rating</label>
                         <StarRating value={rating} onChange={setRating} size="1.6rem" />
                       </div>
                       <div className="form-group full">
                         <label>Message</label>
-                        <textarea value={message} onChange={(e) => setMessage(e.target.value)} required placeholder="How did we do? What could the depot improve?" />
+                        <textarea value={message} onChange={(e) => setMessage(e.target.value)} required placeholder="How did we do? What can we improve?" />
                       </div>
                     </div>
                     {error && <div className="field-error mt-8">{error}</div>}
-                    <button className="btn primary mt-16" type="submit">Send Field Report</button>
+                    <button className="btn primary mt-16" type="submit">Send message</button>
                   </form>
                 )}
               </div>
 
               <div className="panel">
-                <h3>Hits on the Radio</h3>
+                <h3>Direct line</h3>
                 <div className="summary-row"><span>Email</span><span className="sand">contact@syrianmilitarysupply.com</span></div>
-                <div className="summary-row"><span>Hours</span><span className="sand">Mon–Sat: 09:00–19:00 · Sun: Closed</span></div>
+                <div className="summary-row"><span>Hours</span><span className="sand">Mon–Sat: 09:00–19:00</span></div>
                 <div className="summary-row"><span>Base</span><span className="sand">Souk Central, Damascus</span></div>
               </div>
             </div>
 
             <aside>
               <div className="panel" style={{ position: 'sticky', top: 100 }}>
-                <h3>Find the Depot</h3>
-                <div style={{ border: '1px dashed var(--olive-bright)', minHeight: 200, display: 'grid', placeItems: 'center', background: 'var(--matte)', textAlign: 'center', padding: 20 }}>
+                <h3>Visit us</h3>
+                <div style={{ border: '1px dashed var(--line-strong)', minHeight: 200, display: 'grid', placeItems: 'center', background: 'var(--surface-2)', textAlign: 'center', padding: 20, borderRadius: 'var(--radius-s)' }}>
                   <div>
                     <div style={{ fontSize: '2rem' }}>🗺️</div>
                     <p className="muted mt-8" style={{ fontSize: '0.9rem' }}>
-                      Map coordinates pending satellite uplink.<br />
-                      In the meantime: DM us or drop a field report.
+                      Map coming soon —<br />
+                      email us for directions.
                     </p>
                   </div>
                 </div>
                 <div className="info-strip" style={{ gridTemplateColumns: '1fr 1fr', marginTop: 14 }}>
                   <div className="info-item"><div className="k">9</div><div className="t">Categories</div></div>
-                  <div className="info-item"><div className="k">★</div><div className="t">Reviews Logged</div></div>
+                  <div className="info-item"><div className="k">★</div><div className="t">Reviews logged</div></div>
                 </div>
               </div>
             </aside>

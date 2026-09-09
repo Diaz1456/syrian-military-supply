@@ -48,7 +48,7 @@ export default function ChangePassword() {
       </div>
       {mustChange && (
         <div className="status-banner" style={{ borderLeftColor: 'var(--flag-red)', maxWidth: 560 }}>
-          Command requires you to replace the default passphrase before continuing. This is a mandatory protocol change.
+          You must replace the default password before continuing.
         </div>
       )}
       <form onSubmit={submit} className="panel" style={{ maxWidth: 480 }}>

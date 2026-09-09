@@ -20,7 +20,7 @@ export default function FeedbackLog() {
   }, [filter, q, sort]);
 
   const remove = async (id) => {
-    if (!window.confirm('Delete this field report?')) return;
+    if (!window.confirm('Delete this review?')) return;
     await api.delete(`/admin/feedback/${id}`);
     load();
   };
@@ -33,7 +33,7 @@ export default function FeedbackLog() {
   return (
     <>
       <div className="admin-topbar">
-        <h1>Feedback Log — Field Reports</h1>
+        <h1>Feedback</h1>
       </div>
 
       <div className="table-tools">
@@ -43,7 +43,7 @@ export default function FeedbackLog() {
             <button key={r} className={filter === String(r) ? 'active' : ''} onClick={() => setFilter(String(r))}>{r}★</button>
           ))}
         </div>
-        <input placeholder="Search reports…" value={q} onChange={(e) => setQ(e.target.value)} />
+        <input placeholder="Search reviews…" value={q} onChange={(e) => setQ(e.target.value)} />
         <select className="styled-select" value={sort} onChange={(e) => setSort(e.target.value)}>
           <option value="newest">Newest first</option>
           <option value="oldest">Oldest first</option>
@@ -51,11 +51,11 @@ export default function FeedbackLog() {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 12 }}>
-        {feedback.length === 0 && <p className="muted">No field reports in this sector.</p>}
+        {feedback.length === 0 && <p className="muted">No feedback yet.</p>}
         {feedback.map((f) => (
           <div key={f._id} className="review-card" style={{ opacity: f.read ? 0.72 : 1 }}>
             <div className="review-head">
-              <span className="review-op">Op. {f.name || 'Anonymous'}</span>
+              <span className="review-op">{f.name || 'Anonymous'}</span>
               <span className="review-date">{new Date(f.createdAt).toLocaleString()}</span>
             </div>
             <div className="row" style={{ gap: 10 }}>

@@ -52,7 +52,7 @@ export default function SearchBar({ onNavigate }) {
     <form className="search-box" onSubmit={submit} ref={boxRef}>
       <input
         type="search"
-        placeholder="Search the armory…"
+        placeholder="Search…"
         value={q}
         onChange={(e) => {
           setQ(e.target.value);
@@ -70,7 +70,7 @@ export default function SearchBar({ onNavigate }) {
         <div className="search-suggest">
           {results.map((p) => (
             <Link key={p._id} to={`/product/${p._id}`} onClick={() => go(p._id)}>
-              <img src={p.images?.[0]?.url} alt={p.name} loading="lazy" />
+              <img src={p.images?.[0]?.url || 'https://placehold.co/80x80/efede6/9aa1a9?text=No+Image'} alt={p.name} loading="lazy" />
               <div className="p">
                 <div>{p.name}</div>
                 <div className="muted" style={{ fontSize: '0.72rem' }}>{p.category}</div>

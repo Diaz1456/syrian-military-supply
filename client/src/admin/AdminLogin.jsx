@@ -16,7 +16,7 @@ export default function AdminLogin() {
     setBusy(true);
     try {
       const data = await login(username, password);
-      if (data.forcePasswordChange) navigate('/admin/change-password');
+      if (data?.admin?.forcePasswordChange) navigate('/admin/change-password');
       else navigate('/admin');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
@@ -31,8 +31,8 @@ export default function AdminLogin() {
         <div className="brand" style={{ justifyContent: 'center' }}>
           <span className="logo">⛨</span>
         </div>
-        <h1>Command Access</h1>
-        <p className="hint">Restricted sector — authorized personnel only.</p>
+        <h1>Admin Log In</h1>
+        <p className="hint">Syrian Military Supply control panel.</p>
 
         <form onSubmit={submit}>
           <div className="form-group" style={{ marginBottom: 14 }}>
@@ -45,15 +45,15 @@ export default function AdminLogin() {
           </div>
           {error && <div className="field-error" style={{ marginBottom: 10 }}>{error}</div>}
           <button className="btn primary block" type="submit" disabled={busy}>
-            {busy ? 'Verifying credentials…' : 'Authenticate'}
+            {busy ? 'Signing in…' : 'Log in'}
           </button>
         </form>
 
         <p className="muted mt-16" style={{ fontSize: '0.8rem', textAlign: 'center' }}>
-          Default: <code>admin</code> / <code>changeme123</code> — you'll be forced to change it.
+          Default login: <code>admin</code> / <code>changeme123</code> — you'll be asked to change it.
         </p>
         <Link to="/" className="muted" style={{ display: 'block', textAlign: 'center', marginTop: 10, fontSize: '0.85rem' }}>
-          ← Back to public site
+          › Back to store
         </Link>
       </div>
     </div>

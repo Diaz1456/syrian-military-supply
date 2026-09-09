@@ -22,9 +22,9 @@ export default function OrderConfirmation({ settings }) {
   if (err) {
     return (
       <section className="section"><div className="container notfound">
-        <h2>Order not located</h2>
-        <p className="muted mt-8">We couldn't pull up that transmission.</p>
-        <Link to="/shop" className="btn primary mt-16">Back to Armory</Link>
+        <h2>Order not found</h2>
+        <p className="muted mt-8">We couldn't find that order.</p>
+        <Link to="/shop" className="btn primary mt-16">Back to shop</Link>
       </div></section>
     );
   }
@@ -37,15 +37,15 @@ export default function OrderConfirmation({ settings }) {
     <section className="section">
       <div className="container">
         <div className="status-banner">
-          <h1 className="section-title" style={{ fontSize: '1.6rem' }}>✔ Order Transmitted</h1>
-          <p className="mt-8 sand">
-            Confirmation <b className="confirm-num">{order._id}</b> · Status: <b>{STATUS_LABEL[order.status]}</b>
-          </p>
+          <h1 className="section-title" style={{ fontSize: '1.5rem', color: 'var(--accent)' }}>✔ Order placed</h1>
         </div>
+        <p className="mt-8">
+          Confirmation <b className="confirm-num">{order._id}</b> · Status: <b>{STATUS_LABEL[order.status]}</b>
+        </p>
 
-        <div className="checkout-grid">
+        <div className="checkout-grid" style={{ paddingTop: 20 }}>
           <div className="panel">
-            <h3>Items Deployed</h3>
+            <h3>Your order</h3>
             {order.items.map((it) => (
               <div key={it.productId} className="cart-item" style={{ marginBottom: 10 }}>
                 <img src={it.image || 'https://placehold.co/300x300/20242b/6b7279?text=Gear'} alt={it.name} />
@@ -67,7 +67,7 @@ export default function OrderConfirmation({ settings }) {
             <p className="muted" style={{ fontSize: '0.85rem' }}>
               {order.customer.name} · {order.customer.address}, {order.customer.city} {order.customer.state} {order.customer.zip}, {order.customer.country}
             </p>
-            <Link to="/shop" className="btn block mt-16">Keep Shopping</Link>
+            <Link to="/shop" className="btn block mt-16">Continue shopping</Link>
           </aside>
         </div>
       </div>

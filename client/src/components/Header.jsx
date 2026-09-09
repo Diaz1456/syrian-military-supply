@@ -13,68 +13,56 @@ export default function Header() {
   const close = () => setOpen(false);
 
   return (
-    <div className="flag-bar" style={{ position: 'sticky', top: 0, zIndex: 60 }}>
-      <header className="site-header">
-        <div className="topbar">
-          <div className="container">
-            <div className="flag-note">
-              <span>🇸🇾 Locally sourced surplus & tactical gear</span>
-              <span className="muted" style={{ display: 'inline-flex', gap: 4, alignItems: 'center' }}>
-                {rank.icon} Rank: {rank.name} · {visits} visit{visits === 1 ? '' : 's'}
-              </span>
-            </div>
-            <div>
-              <Link to="/contact">Field Reports / Contact</Link>
-            </div>
-          </div>
+    <header className="site-header">
+      <div className="topbar">
+        <div className="container">
+          <span className="topbar-left">Free shipping over $150</span>
+          <span className="topbar-right">
+            <span className="muted" style={{ color: '#9aa1a9' }}>{rank.icon}</span>
+            {rank.name} · {visits} visit{visits === 1 ? '' : 's'}
+          </span>
         </div>
+      </div>
 
-        <div className="container header-main">
-          <button className="mobile-toggle" onClick={() => setOpen(!open)} aria-label="Menu">
-            {open ? '✕' : '☰'}
-          </button>
+      <div className="container header-main">
+        <button className="mobile-toggle" onClick={() => setOpen(!open)} aria-label="Menu">
+          {open ? '✕' : '☰'}
+        </button>
 
-          <Link to="/" className="brand" onClick={close}>
-            <span className="logo">⛨</span>
-            <span>
-              <div className="name">SYRIAN MILITARY SUPPLY</div>
-              <div className="sub">Surplus · Tactical · Local Crafts</div>
-            </span>
+        <Link to="/" className="brand" onClick={close}>
+          <span className="brand-mark">★</span>
+          <span>
+            <div className="brand-name">Syrian Military Supply</div>
+            <div className="brand-sub">Surplus · Tactical · Local Crafts</div>
+          </span>
+        </Link>
+
+        <nav className={`main-nav ${open ? 'open' : ''}`}>
+          <NavLink to="/" end onClick={close}>Home</NavLink>
+          <NavLink to="/shop" end onClick={close}>Shop</NavLink>
+          <NavLink to="/about" onClick={close}>About</NavLink>
+          <NavLink to="/contact" onClick={close}>Contact</NavLink>
+        </nav>
+
+        <div className="header-actions">
+          <SearchBar onNavigate={close} />
+          <Link to="/cart" className="icon-link" title="Cart" onClick={close}>
+            <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7" aria-hidden>
+              <path d="M3 3h2l.6 2.5M6 6h13l-1.8 8.2a2 2 0 0 1-2 1.6H8.6a2 2 0 0 1-2-1.6L4.6 6z" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="9" cy="20.5" r="1.3" fill="currentColor" />
+              <circle cx="16.5" cy="20.5" r="1.3" fill="currentColor" />
+            </svg>
+            {totalCount > 0 && <span className="cart-count">{totalCount}</span>}
           </Link>
-
-          <nav className={`main-nav ${open ? 'open' : ''}`}>
-            <NavLink to="/" onClick={close}>Base HQ</NavLink>
-            <NavLink to="/shop" end onClick={close}>Armory</NavLink>
-            <NavLink to="/about" onClick={close}>About</NavLink>
-            <NavLink to="/contact" onClick={close}>Contact</NavLink>
-          </nav>
-
-          <div className="grow" />
-
-          <div className="header-actions">
-            <SearchBar onNavigate={close} />
-            <Link to="/cart" className="icon-link" title="Cart" onClick={close}>
-              <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7" aria-hidden>
-                <path d="M3 3h2l.6 2.5M6 6h13l-1.8 8.2a2 2 0 0 1-2 1.6H8.6a2 2 0 0 1-2-1.6L4.6 6z" strokeLinecap="round" strokeLinejoin="round" />
-                <circle cx="9" cy="20.5" r="1.3" fill="currentColor" />
-                <circle cx="16.5" cy="20.5" r="1.3" fill="currentColor" />
-              </svg>
-              {totalCount > 0 && <span className="cart-count">{totalCount}</span>}
-            </Link>
-            <button
-              className="icon-link"
-              title="Browse to find your gear"
-              onClick={() => navigate('/shop')}
-            >
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden>
-                <circle cx="18" cy="5" r="3" strokeWidth="1.7" />
-                <circle cx="6" cy="18" r="3" strokeWidth="1.7" />
-                <path d="M5 21L19 3" strokeWidth="1.7" strokeLinecap="round" />
-              </svg>
-            </button>
-          </div>
+          <button className="icon-link" title="Search gear" onClick={() => navigate('/shop')}>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+              <circle cx="18" cy="5" r="3" strokeWidth="1.7" />
+              <circle cx="6" cy="18" r="3" strokeWidth="1.7" />
+              <path d="M5 21L19 3" strokeWidth="1.7" strokeLinecap="round" />
+            </svg>
+          </button>
         </div>
-      </header>
-    </div>
+      </div>
+    </header>
   );
 }

@@ -44,16 +44,34 @@ function parseProductFields(body) {
 
 router.post('/login', async (req, res, next) => {
   try {
-    const { username, password } = req.body || {};
+    const username = String((req.body || {}).username || '').trim().toLowerCase();
+    const password = String((req.body || {}).password || '');
+    if (!username || !password) {
+      return res.status(400).json({ message: 'Enter both username and password.' });
+    }
+    if (require('mongoose').connection.readyState !== 1) {
+      return res.status(503).json({
+        message: 'Database not connected. Check MONGODB_URI on the server and redeploy.',
+      });
+    }
     const record = {
       timestamp: new Date(),
       ip: clientIp(req),
       success: false,
     };
-    const admin = await Admin.findOne({ username: String(username || '').toLowerCase() });
-    if (!admin || !(await bcrypt.compare(password || '', admin.password))) {
-      await Admin.findOneAndUpdate(
-        { username: String(username || '').toLowerCase() },
+    const admin = await Admin.findOne({ username });
+    if (!admin) {
+      const count = await Admin.countDocuments({});
+      if (count === 0) {
+        return res.status(401).json({
+          message: 'No admin account exists yet. Run the seed first (visit /api/seed with ALLOW_SEED enabled), then log in.',
+        });
+      }
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+    if (!(await bcrypt.compare(password, admin.password))) {
+      await Admin.findByIdAndUpdate(
+        admin._id,
         { $push: { loginHistory: { $each: [record], $slice: -50 } } }
       ).catch(() => {});
       return res.status(401).json({ message: 'Invalid credentials' });

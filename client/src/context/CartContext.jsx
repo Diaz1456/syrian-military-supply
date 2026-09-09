@@ -68,7 +68,7 @@ export function CartProvider({ children }) {
 
   useEffect(() => {
     if (totalCount >= 10) {
-      setNotice({ type: 'squad', msg: 'Outfitting a squad, are we? 🪖' });
+      setNotice({ type: 'squad', msg: 'Nice haul — you have 10+ items in your cart.' });
     } else {
       setNotice(null);
     }

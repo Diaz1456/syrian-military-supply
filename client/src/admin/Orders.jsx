@@ -44,7 +44,7 @@ export default function Orders() {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {orders.length === 0 && <p className="muted">No orders match this sector.</p>}
+        {orders.length === 0 && <p className="muted">No orders found.</p>}
         {orders.map((o) => {
           const open = expanded === o._id;
           return (

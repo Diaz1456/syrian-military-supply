@@ -23,7 +23,7 @@ export default function Dashboard() {
   return (
     <>
       <div className="admin-topbar">
-        <h1>Overview — SitRep</h1>
+        <h1>Overview</h1>
       </div>
 
       <div className="stat-grid">
@@ -80,7 +80,7 @@ export default function Dashboard() {
         </div>
 
         <div className="dash-panel">
-          <h3>Recent Field Reports</h3>
+          <h3>Recent Reviews</h3>
           {recentFeedback.length === 0 && <p className="muted">No feedback yet.</p>}
           {recentFeedback.map((f) => (
             <div key={f._id} className="summary-row">
@@ -98,7 +98,7 @@ export default function Dashboard() {
 
       {lowStock.length > 0 && (
         <div className="dash-panel" style={{ marginTop: 20 }}>
-          <h3 style={{ color: 'var(--warn)' }}>⚠ Low / Depleted Stock</h3>
+          <h3 style={{ color: 'var(--warn)' }}>Low / Out of Stock</h3>
           <table className="data-table">
             <thead><tr><th>Item</th><th>Category</th><th>Stock</th><th>Price</th><th></th></tr></thead>
             <tbody>
@@ -106,7 +106,7 @@ export default function Dashboard() {
                 <tr key={p._id}>
                   <td style={{ fontWeight: 600 }}>{p.name}</td>
                   <td>{p.category}</td>
-                  <td><span className={`pill-status ${p.stock <= 0 ? 'cancelled' : 'pending'}`}>{p.stock <= 0 ? 'Depleted' : `${p.stock} left`}</span></td>
+                  <td><span className={`pill-status ${p.stock <= 0 ? 'cancelled' : 'pending'}`}>{p.stock <= 0 ? 'Out of stock' : `${p.stock} left`}</span></td>
                   <td>${Number(p.price).toFixed(2)}</td>
                   <td><Link className="section-link" to={`/admin/products/${p._id}/edit`}>Restock →</Link></td>
                 </tr>

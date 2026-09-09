@@ -61,20 +61,23 @@ export default function Shop() {
     return () => clearTimeout(timer);
   }, [category, q, sort, minPrice, maxPrice, page]);
 
-  const priceInput = { padding: '7px 9px', width: '100%', background: 'var(--matte)', border: '1px solid var(--steel)', color: 'var(--paper)' };
+  const priceInput = { padding: '7px 9px', width: '100%', border: '1px solid var(--line)', borderRadius: 'var(--radius-s)', background: 'var(--surface)', color: 'var(--ink)' };
 
   return (
     <section className="section">
       <div className="container">
         <div className="section-head">
-          <h1 className="section-title flag-accent">The Armory</h1>
-          <span className="muted">{total} items deployed</span>
+          <div>
+            <span className="head-kicker">Catalog</span>
+            <h1 className="section-title">Shop</h1>
+          </div>
+          <span className="muted">{total} item{total === 1 ? '' : 's'}</span>
         </div>
 
         <div className="shop-layout">
           <aside className="filters">
             <div className="filter-group">
-              <div className="filter-title">Division</div>
+              <div className="filter-title">Category</div>
               <div className="filter-list">
                 <label><input type="radio" checked={category === 'All'} onChange={() => setParam('category', 'All')} /> All Gear</label>
                 {categories.map((c) => (
@@ -87,18 +90,18 @@ export default function Shop() {
             </div>
 
             <div className="filter-group">
-              <div className="filter-title">Budget Range ($)</div>
+              <div className="filter-title">Price ($)</div>
               <div className="price-range" style={{ marginBottom: 8 }}>
                 <input type="number" min="0" placeholder="Min" value={minPrice} onChange={(e) => setParam('min', e.target.value)} style={priceInput} />
                 <input type="number" min="0" placeholder="Max" value={maxPrice} onChange={(e) => setParam('max', e.target.value)} style={priceInput} />
               </div>
               {(minPrice || maxPrice) && (
-                <button className="btn small ghost" onClick={() => { setParam('min', ''); setParam('max', ''); }}>Clear Range</button>
+                <button className="btn small ghost" onClick={() => { setParam('min', ''); setParam('max', ''); }}>Clear</button>
               )}
             </div>
 
             <div className="filter-group">
-              <div className="filter-title">Load Order</div>
+              <div className="filter-title">Sort</div>
               <select className="styled-select" value={sort} onChange={(e) => setParam('sort', e.target.value)}>
                 <option value="newest">Newest Arrivals</option>
                 <option value="popular">Most Popular</option>
@@ -116,7 +119,7 @@ export default function Shop() {
                 </div>
               )}
               <span className="muted" style={{ fontSize: '0.85rem' }}>
-                {loading ? 'Scanning depot…' : `Showing ${products.length} of ${total}`}
+                {loading ? 'Loading…' : `${products.length} of ${total}`}
               </span>
             </div>
 
@@ -128,8 +131,9 @@ export default function Shop() {
               </div>
             ) : products.length === 0 ? (
               <div className="empty-state">
-                <h3 style={{ textTransform: 'uppercase' }}>Nothing in this sector</h3>
-                <p className="muted mt-8">Try widening your search or clearing filters.</p>
+                <div className="icon">▣</div>
+                <h3>No items found</h3>
+                <p className="muted">Try adjusting your filters or search.</p>
               </div>
             ) : (
               <div className="grid products">
@@ -142,7 +146,7 @@ export default function Shop() {
                 {Array.from({ length: pages }).map((_, i) => (
                   <button
                     key={i}
-                    className={page === i + 1 ? 'active' : ''}
+                    className={page === i + 1 ? 'primary' : ''}
                     onClick={() => setPage(i + 1)}
                     disabled={loading}
                   >

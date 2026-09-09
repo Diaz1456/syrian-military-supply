@@ -7,7 +7,7 @@ import StarRating from '../components/StarRating';
 
 export default function ProductDetail() {
   const { id } = useParams();
-  const { addToCart, totalCount } = useCart();
+  const { addToCart } = useCart();
   const [product, setProduct] = useState(null);
   const [related, setRelated] = useState([]);
   const [reports, setReports] = useState([]);
@@ -54,9 +54,9 @@ export default function ProductDetail() {
     return (
       <section className="section"><div className="container notfound">
         <div className="big">404</div>
-        <h2>This item went M.I.A.</h2>
-        <p className="muted mt-8">The supply line gave out on this one. Head back to the armory.</p>
-        <Link to="/shop" className="btn primary mt-16">Back to Base</Link>
+        <h2>Item not found</h2>
+        <p className="muted mt-8">This product is no longer available.</p>
+        <Link to="/shop" className="btn primary mt-16">Back to shop</Link>
       </div></section>
     );
   }
@@ -71,11 +71,11 @@ export default function ProductDetail() {
     if (!reportRating) return setReportError('Select a 1–5 star rating.');
     try {
       await api.post('/feedback', {
-        name: reportName || 'Anonymous Operator',
+        name: reportName || 'Anonymous',
         email: '',
         rating: reportRating,
         message: reportMsg,
-        subject: `Field Report — ${product.name}`,
+        subject: `Review — ${product.name}`,
       });
       setReportSent(true);
       setReportMsg('');
@@ -91,7 +91,7 @@ export default function ProductDetail() {
     <section className="section">
       <div className="container">
         <nav className="muted" style={{ fontSize: '0.85rem', marginBottom: 22 }}>
-          <Link to="/shop">Armory</Link> / <Link to={`/shop?category=${encodeURIComponent(product.category)}`}>{product.category}</Link> / {product.name}
+          <Link to="/shop">Shop</Link> / <Link to={`/shop?category=${encodeURIComponent(product.category)}`}>{product.category}</Link> / {product.name}
         </nav>
 
         <div className="pd-grid">
@@ -115,14 +115,14 @@ export default function ProductDetail() {
             <div className="pd-meta">
               <span>SKU {product.sku || '—'}</span>
               <span className={`stock-pill ${stockStatus === 'in' ? 'in' : stockStatus === 'low' ? 'low' : 'out'}`}>
-                {stockStatus === 'in' ? '🟢 In Supply' : stockStatus === 'low' ? '🟡 Limited' : '🔴 Depleted'}
+                {stockStatus === 'in' ? '● In stock' : stockStatus === 'low' ? '● Low stock' : '● Out of stock'}
               </span>
             </div>
 
             <div className="pd-price">
               <span className="now">${Number(eff).toFixed(2)}</span>
               {onSale && <span className="was">${Number(product.price).toFixed(2)}</span>}
-              {onSale && <span className="tag sale">Mission Sale</span>}
+              {onSale && <span className="tag sale">Sale</span>}
             </div>
 
             <p className="pd-desc">{product.description || 'No description on file for this item.'}</p>
@@ -139,14 +139,14 @@ export default function ProductDetail() {
                 disabled={stockStatus === 'out'}
                 onClick={() => { addToCart(product, qty); setAdded(true); }}
               >
-                Add to Cart ++
+                Add to Cart
               </button>
             </div>
-            {added && <div className="added-msg">✔ Loaded into your cart.{totalCount + qty >= 10 ? ' Outfitting a squad, are we? 🪖' : ''}</div>}
-            {product.stock <= 5 && product.stock > 0 && <div className="muted mt-8" style={{ fontSize: '0.85rem' }}>⚠ Only {product.stock} left in the depot.</div>}
+            {added && <div className="added-msg">✔ Added to your cart.</div>}
+            {product.stock <= 5 && product.stock > 0 && <div className="muted mt-8" style={{ fontSize: '0.85rem' }}>Only {product.stock} left in stock.</div>}
 
             <div className="panel mt-24">
-              <h3>Spec Sheet</h3>
+              <h3>Specs</h3>
               <table className="specs-table">
                 <tbody>
                   <tr><td>Material</td><td>{product.specs?.material || '—'}</td></tr>
@@ -162,15 +162,14 @@ export default function ProductDetail() {
 
         <section className="section" style={{ paddingBottom: 0 }}>
           <div className="section-head">
-            <h2 className="section-title flag-accent">Field Reports</h2>
-            <span className="muted" style={{ fontSize: '0.85rem' }}>Squad-approved intel from other operators</span>
+            <h2 className="section-title">Reviews</h2>
           </div>
           <div className="grid reviews">
-            {reports.length === 0 && <div className="muted">No reports filed yet. Say something about this unit.</div>}
+            {reports.length === 0 && <div className="muted">No reviews yet. Be the first to review this item.</div>}
             {reports.map((r) => (
               <div key={r._id} className="review-card">
                 <div className="review-head">
-                  <span className="review-op">Op. {r.name || 'Anonymous'}</span>
+                  <span className="review-op">{r.name || 'Anonymous'}</span>
                   <span className="review-date">{new Date(r.createdAt).toLocaleDateString()}</span>
                 </div>
                 <StarRating value={r.rating} />
@@ -180,27 +179,27 @@ export default function ProductDetail() {
           </div>
 
           <div className="panel mt-24">
-            <h3>File Your Field Report</h3>
+            <h3>Write a review</h3>
             {reportSent ? (
-              <p style={{ color: 'var(--good)' }}>✔ Report received. Command appreciates the intel.</p>
+              <p style={{ color: 'var(--good)' }}>✔ Thanks for your review.</p>
             ) : (
               <form onSubmit={submitReport}>
                 <div className="form-grid">
                   <div className="form-group">
-                    <label>Operator Name</label>
-                    <input value={reportName} onChange={(e) => setReportName(e.target.value)} placeholder="Callsign or name" />
+                    <label>Your name</label>
+                    <input value={reportName} onChange={(e) => setReportName(e.target.value)} placeholder="Name or callsign" />
                   </div>
                   <div className="form-group">
                     <label>Rating</label>
                     <StarRating value={reportRating} onChange={setReportRating} />
                   </div>
                   <div className="form-group full">
-                    <label>Report</label>
-                    <textarea value={reportMsg} onChange={(e) => setReportMsg(e.target.value)} required placeholder="How did it hold up in the field?" />
+                    <label>Your review</label>
+                    <textarea value={reportMsg} onChange={(e) => setReportMsg(e.target.value)} required placeholder="How did it hold up?" />
                   </div>
                 </div>
                 {reportError && <div className="field-error mt-8">{reportError}</div>}
-                <button className="btn primary mt-16" type="submit">Submit Report</button>
+                <button className="btn primary mt-16" type="submit">Submit review</button>
               </form>
             )}
           </div>
@@ -209,7 +208,7 @@ export default function ProductDetail() {
         {related.length > 0 && (
           <section className="section" style={{ paddingBottom: 0 }}>
             <div className="section-head">
-              <h2 className="section-title">Related Gear</h2>
+              <h2 className="section-title">Related items</h2>
             </div>
             <div className="grid products" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
               {related.slice(0, 4).map((p) => <ProductCard key={p._id} product={p} />)}
