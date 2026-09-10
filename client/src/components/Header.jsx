@@ -40,7 +40,6 @@ export default function Header({ settings }) {
         <nav className={`main-nav ${open ? 'open' : ''}`}>
           <NavLink to="/" end onClick={close}>Home</NavLink>
           <NavLink to="/shop" end onClick={close}>Shop</NavLink>
-          <NavLink to="/about" onClick={close}>About</NavLink>
           <NavLink to="/contact" onClick={close}>Contact</NavLink>
         </nav>
 
@@ -54,11 +53,10 @@ export default function Header({ settings }) {
             </svg>
             {totalCount > 0 && <span className="cart-count">{totalCount}</span>}
           </Link>
-          <button className="icon-link" title="Search gear" onClick={() => navigate('/shop')}>
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden>
-              <circle cx="18" cy="5" r="3" strokeWidth="1.7" />
-              <circle cx="6" cy="18" r="3" strokeWidth="1.7" />
-              <path d="M5 21L19 3" strokeWidth="1.7" strokeLinecap="round" />
+          <button className="icon-link" title="Shop" onClick={() => navigate('/shop')}>
+            <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7" aria-hidden>
+              <path d="M4 7.5h16v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z" strokeLinejoin="round" />
+              <path d="M8 7.5V6a4 4 0 0 1 8 0v1.5" strokeLinecap="round" />
             </svg>
           </button>
         </div>

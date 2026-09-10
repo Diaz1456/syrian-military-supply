@@ -200,7 +200,7 @@ small { font-size: 0.85em; }
   height: 2px;
   background: var(--accent);
 }
-.header-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.header-actions { display: flex; align-items: center; gap: 10px; margin-left: auto; flex: none; }
 .icon-link {
   position: relative;
   width: 40px; height: 40px;
@@ -209,10 +209,11 @@ small { font-size: 0.85em; }
   border-radius: var(--radius-s);
   background: var(--surface);
   color: var(--ink);
+  flex: none;
   transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
 }
 .icon-link:hover { border-color: var(--accent); color: var(--olive-bright); background: var(--accent-2); }
-.icon-link svg { width: 19px; height: 19px; }
+.icon-link svg { width: 20px; height: 20px; }
 .cart-count {
   position: absolute; top: -7px; right: -7px;
   min-width: 18px; height: 18px;

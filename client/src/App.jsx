@@ -10,7 +10,6 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import OrderConfirmation from './pages/OrderConfirmation';
-import About from './pages/About';
 import Contact from './pages/Contact';
 import MIA from './pages/MIA';
 
@@ -93,16 +92,8 @@ export default function App() {
           </PublicLayout>
         }
       />
-      <Route
-        path="/about"
-        element={
-          <PublicLayout settings={settings}>
-            <About />
-          </PublicLayout>
-        }
-      />
 <Route
-          path="/contact"
+        path="/contact"
           element={
             <PublicLayout settings={settings}>
               <Contact settings={settings} />

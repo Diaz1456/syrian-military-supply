@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api';
 import ProductCard from '../components/ProductCard';
-import Newsletter from '../components/Newsletter';
 
 function Carousel({ items, title, link }) {
   const ref = React.useRef(null);
@@ -203,36 +202,6 @@ export default function Home() {
           {bestSellers.length > 0 && <Carousel items={bestSellers} title="Best Sellers" link="/shop?sort=popular" />}
         </div>
       </section>
-
-      <section className="section" style={{ paddingTop: 0, paddingBottom: 8 }}>
-        <div className="container">
-          <div className="about-grid">
-            <div>
-              <h2 className="section-title">The base</h2>
-              <p className="lead mt-16" style={{ maxWidth: 540 }}>
-                Surplus, tactical gear and Damascus craft — sourced and hand-inspected.
-              </p>
-              <p className="muted" style={{ maxWidth: 540 }}>
-                Buying local keeps centuries-old workshops alive.
-              </p>
-              <div className="row mt-24" style={{ gap: 12 }}>
-                <Link to="/about" className="btn">Our story</Link>
-                <Link to="/contact" className="btn ghost">Contact</Link>
-              </div>
-            </div>
-            <div className="shadow-box">
-              <h3 style={{ fontSize: '1rem', marginBottom: 12 }}>Why us</h3>
-              <ul>
-                <li>Inspection scores on every item</li>
-                <li>Free shipping over $150</li>
-                <li>Rank rewards for repeat visits</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Newsletter />
     </>
   );
 }
