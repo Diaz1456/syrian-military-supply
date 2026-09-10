@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function SearchBar({ onNavigate }) {
   const [q, setQ] = useState('');
@@ -8,6 +9,7 @@ export default function SearchBar({ onNavigate }) {
   const [open, setOpen] = useState(false);
   const boxRef = useRef(null);
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -52,7 +54,7 @@ export default function SearchBar({ onNavigate }) {
     <form className="search-box" onSubmit={submit} ref={boxRef}>
       <input
         type="search"
-        placeholder="Search…"
+        placeholder={t('search_placeholder')}
         value={q}
         onChange={(e) => {
           setQ(e.target.value);
@@ -60,7 +62,7 @@ export default function SearchBar({ onNavigate }) {
         }}
         onFocus={() => setOpen(true)}
       />
-      <button type="submit" aria-label="Search">
+      <button type="submit" aria-label={t('search_label')}>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="11" cy="11" r="7" />
           <path d="M21 21l-4.5-4.5" strokeLinecap="round" />

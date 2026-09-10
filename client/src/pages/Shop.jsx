@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import api from '../api';
+import { useLanguage } from '../context/LanguageContext';
 import ProductCard from '../components/ProductCard';
 
 const CATEGORIES = [
@@ -16,6 +17,7 @@ export default function Shop() {
   const [pages, setPages] = useState(1);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const { t } = useLanguage();
 
   const category = params.get('category') || 'All';
   const q = params.get('q') || '';
@@ -68,18 +70,18 @@ export default function Shop() {
       <div className="container">
         <div className="section-head">
           <div>
-            <span className="head-kicker">Catalog</span>
-            <h1 className="section-title">Shop</h1>
+            <span className="head-kicker">{t('shop_kicker')}</span>
+            <h1 className="section-title">{t('nav_shop')}</h1>
           </div>
-          <span className="muted">{total} item{total === 1 ? '' : 's'}</span>
+          <span className="muted">{total} {t(total === 1 ? 'home_item_one' : 'home_item_other')}</span>
         </div>
 
         <div className="shop-layout">
           <aside className="filters">
             <div className="filter-group">
-              <div className="filter-title">Category</div>
+              <div className="filter-title">{t('shop_category')}</div>
               <div className="filter-list">
-                <label><input type="radio" checked={category === 'All'} onChange={() => setParam('category', 'All')} /> All Gear</label>
+                <label><input type="radio" checked={category === 'All'} onChange={() => setParam('category', 'All')} /> {t('shop_all_gear')}</label>
                 {categories.map((c) => (
                   <label key={c.name}>
                     <input type="radio" checked={category === c.name} onChange={() => setParam('category', c.name)} />
@@ -90,23 +92,23 @@ export default function Shop() {
             </div>
 
             <div className="filter-group">
-              <div className="filter-title">Price ($)</div>
+              <div className="filter-title">{t('shop_price')}</div>
               <div className="price-range" style={{ marginBottom: 8 }}>
-                <input type="number" min="0" placeholder="Min" value={minPrice} onChange={(e) => setParam('min', e.target.value)} style={priceInput} />
-                <input type="number" min="0" placeholder="Max" value={maxPrice} onChange={(e) => setParam('max', e.target.value)} style={priceInput} />
+                <input type="number" min="0" placeholder={t('shop_min')} value={minPrice} onChange={(e) => setParam('min', e.target.value)} style={priceInput} />
+                <input type="number" min="0" placeholder={t('shop_max')} value={maxPrice} onChange={(e) => setParam('max', e.target.value)} style={priceInput} />
               </div>
               {(minPrice || maxPrice) && (
-                <button className="btn small ghost" onClick={() => { setParam('min', ''); setParam('max', ''); }}>Clear</button>
+                <button className="btn small ghost" onClick={() => { setParam('min', ''); setParam('max', ''); }}>{t('shop_clear')}</button>
               )}
             </div>
 
             <div className="filter-group">
-              <div className="filter-title">Sort</div>
+              <div className="filter-title">{t('shop_sort')}</div>
               <select className="styled-select" value={sort} onChange={(e) => setParam('sort', e.target.value)}>
-                <option value="newest">Newest Arrivals</option>
-                <option value="popular">Most Popular</option>
-                <option value="price-asc">Price: Low → High</option>
-                <option value="price-desc">Price: High → Low</option>
+                <option value="newest">{t('shop_sort_newest')}</option>
+                <option value="popular">{t('shop_sort_popular')}</option>
+                <option value="price-asc">{t('shop_sort_low_high')}</option>
+                <option value="price-desc">{t('shop_sort_high_low')}</option>
               </select>
             </div>
           </aside>
@@ -115,11 +117,11 @@ export default function Shop() {
             <div className="toolbar">
               {q && (
                 <div className="muted" style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                  Results for “{q}” <button className="btn small ghost" onClick={() => setParam('q', '')}>✕</button>
+                  {t('shop_results_for', { q })} <button className="btn small ghost" onClick={() => setParam('q', '')}>✕</button>
                 </div>
               )}
               <span className="muted" style={{ fontSize: '0.85rem' }}>
-                {loading ? 'Loading…' : `${products.length} of ${total}`}
+                {loading ? t('shop_loading') : `${products.length} ${t('shop_of')} ${total}`}
               </span>
             </div>
 
@@ -132,8 +134,8 @@ export default function Shop() {
             ) : products.length === 0 ? (
               <div className="empty-state">
                 <div className="icon">▣</div>
-                <h3>No items found</h3>
-                <p className="muted">Try adjusting your filters or search.</p>
+                <h3>{t('shop_empty_title')}</h3>
+                <p className="muted">{t('shop_empty_text')}</p>
               </div>
             ) : (
               <div className="grid products">

@@ -224,6 +224,21 @@ small { font-size: 0.85em; }
   font-size: 0.66rem; font-weight: 700;
   clip-path: var(--clip-corner);
 }
+.lang-toggle {
+  width: auto; min-width: 36px; height: 40px;
+  padding: 0 8px;
+  display: grid; place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-s);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.82rem; font-weight: 700;
+  cursor: pointer;
+  flex: none;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.lang-toggle:hover { border-color: var(--accent); color: var(--olive-bright); background: var(--accent-2); }
 .mobile-toggle { display: none; background: none; border: 1px solid var(--line-strong); border-radius: var(--radius-s); width: 40px; height: 40px; font-size: 1.1rem; color: var(--ink); }
 
 /* Search */
@@ -863,4 +878,27 @@ textarea { resize: vertical; min-height: 96px; }
   .form-grid { grid-template-columns: 1fr; }
   .products { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
   .carousel-track .product-card { flex-basis: 210px; }
+}
+
+/* ---------- RTL ---------- */
+[dir="rtl"] {
+  --font-head: 'Cairo', 'Oswald', system-ui;
+  --font-body: 'Cairo', 'Inter', system-ui;
+}
+html[dir="rtl"] .header-actions {
+  margin-left: 0;
+  margin-right: auto;
+}
+@media (max-width: 720px) {
+  html[dir="rtl"] .main-nav {
+    left: auto;
+    right: 0;
+    transform: translateX(100%);
+    border-right: none;
+    border-left: 1px solid var(--line);
+  }
+  html[dir="rtl"] .main-nav.open { transform: translateX(0); }
+}
+@media (max-width: 920px) {
+  html[dir="rtl"] .info-strip { direction: ltr; }
 }

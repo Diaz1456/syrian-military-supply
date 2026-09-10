@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Newsletter() {
   const [email, setEmail] = useState('');
   const [done, setDone] = useState(false);
+  const { t } = useLanguage();
 
   const submit = (e) => {
     e.preventDefault();
@@ -22,15 +24,15 @@ export default function Newsletter() {
     <section className="newsletter">
       <div className="container inner">
         <div>
-          <h3>Field updates</h3>
-          <p>New gear, sales and restocks.</p>
+          <h3>{t('nl_title')}</h3>
+          <p>{t('nl_subtitle')}</p>
         </div>
         {done ? (
-          <p className="good" style={{ fontFamily: 'var(--font-head)', fontWeight: 700 }}>✔ Signed up. Welcome aboard.</p>
+          <p className="good" style={{ fontFamily: 'var(--font-head)', fontWeight: 700 }}>{t('nl_success')}</p>
         ) : (
           <form className="newsletter-form" onSubmit={submit}>
-            <input type="email" required placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <button className="btn primary" type="submit">Sign up</button>
+            <input type="email" required placeholder={t('nl_email')} value={email} onChange={(e) => setEmail(e.target.value)} />
+            <button className="btn primary" type="submit">{t('nl_signup')}</button>
           </form>
         )}
       </div>

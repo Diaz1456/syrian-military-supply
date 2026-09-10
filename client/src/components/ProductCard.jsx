@@ -1,15 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const STATUS = {
-  in: { cls: 'in', label: 'In supply', icon: '●' },
-  low: { cls: 'low', label: 'Limited stock', icon: '●' },
-  out: { cls: 'out', label: 'Out of stock', icon: '●' },
+  in: { cls: 'in', key: 'status_in', icon: '●' },
+  low: { cls: 'low', key: 'status_low', icon: '●' },
+  out: { cls: 'out', key: 'status_out', icon: '●' },
 };
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
+  const { t } = useLanguage();
   const status = product.stockStatus || (product.stock <= 0 ? 'out' : product.stock <= 5 ? 'low' : 'in');
   const st = STATUS[status] || STATUS.in;
   const onSale = product.salePrice && product.salePrice < product.price;
@@ -25,7 +27,7 @@ export default function ProductCard({ product }) {
       <div className="pc-body">
         <div className="pc-top">
           <span className="pc-cat">{product.category}</span>
-          {onSale && <span className="pc-sale">Sale</span>}
+          {onSale && <span className="pc-sale">{t('sale')}</span>}
         </div>
         <h3 className="pc-name"><Link to={`/product/${product._id}`}>{product.name}</Link></h3>
         <div className="pc-foot">
@@ -33,7 +35,7 @@ export default function ProductCard({ product }) {
             <span className="pc-price">${Number(eff).toFixed(2)}</span>
             {onSale && <span className="pc-price old">${Number(product.price).toFixed(2)}</span>}
           </span>
-          <span className="pc-stock"><span className={`dot ${st.cls}`} />{st.label}</span>
+          <span className="pc-stock"><span className={`dot ${st.cls}`} />{t(st.key)}</span>
         </div>
       </div>
     </article>

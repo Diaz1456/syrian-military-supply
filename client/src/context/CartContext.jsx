@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useLanguage } from './LanguageContext';
 
 const CartContext = createContext(null);
 const KEY = 'sms_cart';
@@ -16,6 +17,7 @@ function load() {
 export function CartProvider({ children }) {
   const [items, setItems] = useState(load);
   const [notice, setNotice] = useState(null);
+  const { t, lang } = useLanguage();
 
   useEffect(() => {
     localStorage.setItem(KEY, JSON.stringify(items));
@@ -68,11 +70,11 @@ export function CartProvider({ children }) {
 
   useEffect(() => {
     if (totalCount >= 10) {
-      setNotice({ type: 'squad', msg: 'Nice haul — you have 10+ items in your cart.' });
+      setNotice({ type: 'squad', msg: t('cart_big_haul') });
     } else {
       setNotice(null);
     }
-  }, [totalCount]);
+  }, [totalCount, lang]);
 
   const value = {
     items,

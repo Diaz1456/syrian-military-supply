@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useVisit } from '../context/VisitContext';
+import { useLanguage } from '../context/LanguageContext';
 import SearchBar from './SearchBar';
 
 export default function Header({ settings }) {
   const { totalCount } = useCart();
   const { rank, visits } = useVisit();
+  const { t, toggleLang, lang } = useLanguage();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -17,16 +19,16 @@ export default function Header({ settings }) {
     <header className="site-header">
       <div className="topbar">
         <div className="container">
-          <span className="topbar-left">{settings?.freeShippingThreshold != null && `Free shipping $${settings.freeShippingThreshold}+`}</span>
+          <span className="topbar-left">{settings?.freeShippingThreshold != null && t('header_free_shipping', { amount: settings.freeShippingThreshold })}</span>
           <span className="topbar-right">
             <span className="muted" style={{ color: '#6f756e' }}>{rank.icon}</span>
-            {rank.name} · {visits} visits
+            {t(`rank_${rank.level}`)} · {t('header_visits', { count: visits })}
           </span>
         </div>
       </div>
 
       <div className="container header-main">
-        <button className="mobile-toggle" onClick={() => setOpen(!open)} aria-label="Menu">
+        <button className="mobile-toggle" onClick={() => setOpen(!open)} aria-label={t('header_menu')}>
           {open ? '✕' : '☰'}
         </button>
 
@@ -38,14 +40,22 @@ export default function Header({ settings }) {
         </Link>
 
         <nav className={`main-nav ${open ? 'open' : ''}`}>
-          <NavLink to="/" end onClick={close}>Home</NavLink>
-          <NavLink to="/shop" end onClick={close}>Shop</NavLink>
-          <NavLink to="/contact" onClick={close}>Contact</NavLink>
+          <NavLink to="/" end onClick={close}>{t('nav_home')}</NavLink>
+          <NavLink to="/shop" end onClick={close}>{t('nav_shop')}</NavLink>
+          <NavLink to="/contact" onClick={close}>{t('nav_contact')}</NavLink>
         </nav>
 
         <div className="header-actions">
           <SearchBar onNavigate={close} />
-          <Link to="/cart" className="icon-link" title="Cart" onClick={close}>
+          <button
+            className="lang-toggle"
+            onClick={toggleLang}
+            aria-label={lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'}
+            title={lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'}
+          >
+            {lang === 'ar' ? t('header_lang_en') : t('header_lang_ar')}
+          </button>
+          <Link to="/cart" className="icon-link" title={t('header_cart')} onClick={close}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
               <path d="M3 3h2l.6 2.5M6 6h13l-1.8 8.2a2 2 0 0 1-2 1.6H8.6a2 2 0 0 1-2-1.6L4.6 6z" strokeLinecap="round" strokeLinejoin="round" />
               <circle cx="9" cy="20.5" r="1.3" fill="currentColor" />
@@ -53,7 +63,7 @@ export default function Header({ settings }) {
             </svg>
             {totalCount > 0 && <span className="cart-count">{totalCount}</span>}
           </Link>
-          <button className="icon-link" title="Shop" onClick={() => navigate('/shop')}>
+          <button className="icon-link" title={t('nav_shop')} onClick={() => navigate('/shop')}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
               <path d="M4 7.5h16v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z" strokeLinejoin="round" />
               <path d="M8 7.5V6a4 4 0 0 1 8 0v1.5" strokeLinecap="round" />
