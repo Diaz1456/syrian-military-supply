@@ -46,7 +46,7 @@ export default function Header({ settings }) {
         <div className="header-actions">
           <SearchBar onNavigate={close} />
           <Link to="/cart" className="icon-link" title="Cart" onClick={close}>
-            <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7" aria-hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
               <path d="M3 3h2l.6 2.5M6 6h13l-1.8 8.2a2 2 0 0 1-2 1.6H8.6a2 2 0 0 1-2-1.6L4.6 6z" strokeLinecap="round" strokeLinejoin="round" />
               <circle cx="9" cy="20.5" r="1.3" fill="currentColor" />
               <circle cx="16.5" cy="20.5" r="1.3" fill="currentColor" />
@@ -54,7 +54,7 @@ export default function Header({ settings }) {
             {totalCount > 0 && <span className="cart-count">{totalCount}</span>}
           </Link>
           <button className="icon-link" title="Shop" onClick={() => navigate('/shop')}>
-            <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7" aria-hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
               <path d="M4 7.5h16v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z" strokeLinejoin="round" />
               <path d="M8 7.5V6a4 4 0 0 1 8 0v1.5" strokeLinecap="round" />
             </svg>
