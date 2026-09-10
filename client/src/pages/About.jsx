@@ -13,7 +13,7 @@ export default function About() {
   return (
     <>
       <section className="hero">
-        <div className="container hero-inner" style={{ padding: '56px 0 64px' }}>
+        <div className="container hero-inner" style={{ padding: '44px 0 48px' }}>
           <div className="hero-content">
             <span className="hero-kicker">About</span>
             <h1>Surplus with a story.</h1>
@@ -22,7 +22,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="section" style={{ paddingTop: 34 }}>
+      <section className="section" style={{ paddingTop: 24 }}>
         <div className="container">
           <div className="about-grid">
             <div>

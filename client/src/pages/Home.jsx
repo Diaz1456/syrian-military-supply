@@ -187,7 +187,7 @@ export default function Home() {
         {newArrivals.length > 0 && <Carousel items={newArrivals} title="New Arrivals" link="/shop?sort=newest" />}
       </div>
 
-      <section className="section alt" style={{ marginTop: 34 }}>
+      <section className="section alt" style={{ marginTop: 24 }}>
         <div className="container">
           <div className="info-strip">
             <div className="info-item"><div className="k">{stats.count || '—'}</div><div className="t">Listings</div></div>
