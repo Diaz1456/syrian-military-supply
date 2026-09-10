@@ -12,6 +12,20 @@ const CATEGORIES = [
   'Local Crafts',
 ];
 
+const DEFAULT_CATEGORIES = CATEGORIES.map((name) => ({
+  id: slugify(name),
+  name,
+}));
+
+function slugify(text = '') {
+  return String(text)
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '')
+    .slice(0, 48) || 'misc';
+}
+
 function randomId() {
   return uuidv4();
 }
@@ -55,6 +69,8 @@ function startOfWeek(date = new Date()) {
 
 module.exports = {
   CATEGORIES,
+  DEFAULT_CATEGORIES,
+  slugify,
   randomId,
   detectDevice,
   clientIp,

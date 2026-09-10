@@ -19,6 +19,7 @@ import ProtectedRoute from './admin/ProtectedRoute';
 import Dashboard from './admin/Dashboard';
 import Products from './admin/Products';
 import ProductForm from './admin/ProductForm';
+import AdminCategories from './admin/AdminCategories';
 import Orders from './admin/Orders';
 import FeedbackLog from './admin/FeedbackLog';
 import Visitors from './admin/Visitors';
@@ -113,6 +114,7 @@ export default function App() {
         <Route path="products" element={<Products />} />
         <Route path="products/new" element={<ProductForm />} />
         <Route path="products/:id/edit" element={<ProductForm />} />
+        <Route path="categories" element={<AdminCategories />} />
         <Route path="orders" element={<Orders />} />
         <Route path="feedback" element={<FeedbackLog />} />
         <Route path="visitors" element={<Visitors />} />

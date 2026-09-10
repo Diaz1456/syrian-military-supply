@@ -7,7 +7,6 @@ const Visitor = require('../models/Visitor');
 const Slide = require('../models/Slide');
 const { getSettings } = require('../models/Settings');
 const {
-  CATEGORIES,
   detectDevice,
   clientIp,
   parseSort,
@@ -30,6 +29,7 @@ router.get('/settings/public', async (req, res, next) => {
       freeShippingThreshold: s.freeShippingThreshold,
       contactEmail: s.contactEmail,
       hoursOfOperation: s.hoursOfOperation,
+      categories: (s.categories || []).map((c) => c.name),
     });
   } catch (err) {
     next(err);
@@ -45,9 +45,10 @@ router.get('/categories', async (req, res, next) => {
     ]);
     const counts = {};
     rows.forEach((r) => (counts[r._id] = r.count));
-    const list = CATEGORIES.map((c) => ({ name: c, count: counts[c] || 0 })).filter(
-      (c) => c.count > 0
-    );
+    const s = await getSettings();
+    const list = (s.categories || [])
+      .map((c) => ({ name: c.name, count: counts[c.name] || 0 }))
+      .filter((c) => c.count > 0);
     res.json({ categories: list });
   } catch (err) {
     next(err);

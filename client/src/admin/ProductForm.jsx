@@ -23,8 +23,21 @@ export default function ProductForm() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(isEdit);
+  const [categories, setCategories] = useState(CATEGORIES);
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+
+  useEffect(() => {
+    api.get('/admin/settings')
+      .then((r) => {
+        const c = r.data.settings?.categories;
+        if (Array.isArray(c) && c.length) {
+          setCategories(c.map((x) => x.name));
+          setForm((f) => ({ ...f, category: c.some((x) => x.name === f.category) ? f.category : c[0].name }));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (!isEdit) return;
@@ -84,7 +97,7 @@ export default function ProductForm() {
               <div className="form-group">
                 <label>Category</label>
                 <select value={form.category} onChange={set('category')}>
-                  {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+                  {categories.map((c) => <option key={c}>{c}</option>)}
                 </select>
               </div>
               <div className="form-group">

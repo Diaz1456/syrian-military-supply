@@ -10,6 +10,12 @@ export default function Footer({ settings, showNewsletter }) {
   const pct = Math.min(100, (visits / 25) * 100);
   const storeName = settings?.storeName || '';
 
+  const fallbackCats = ['Surplus', 'Knives & Tools', 'Local Crafts'];
+  const storedCats = Array.isArray(settings?.categories) && settings.categories.length
+    ? settings.categories
+    : fallbackCats;
+  const shopCats = storedCats.slice(0, 3);
+
   return (
     <>
       {showNewsletter && <Newsletter />}
@@ -29,9 +35,9 @@ export default function Footer({ settings, showNewsletter }) {
               <h4>{t('footer_shop_title')}</h4>
               <ul>
                 <li><Link to="/shop">{t('footer_all_gear')}</Link></li>
-                <li><Link to="/shop?category=Surplus">{t('footer_surplus')}</Link></li>
-                <li><Link to="/shop?category=Knives%20%26%20Tools">{t('footer_knives_tools')}</Link></li>
-                <li><Link to="/shop?category=Local%20Crafts">{t('footer_local_crafts')}</Link></li>
+                {shopCats.map((c) => (
+                  <li key={c}><Link to={`/shop?category=${encodeURIComponent(c)}`}>{c}</Link></li>
+                ))}
               </ul>
             </div>
             <div>

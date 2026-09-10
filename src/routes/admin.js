@@ -9,7 +9,7 @@ const { getSettings } = require('../models/Settings');
 const { signToken, requireAdmin } = require('../middleware/auth');
 const { parseProductFiles, parseSlideImage, finalizeImages, finalizeSingle } = require('../middleware/upload');
 const { destroyCloudinary } = require('../middleware/errorHandler');
-const { CATEGORIES, clientIp, startOfDay, startOfWeek } = require('../utils/helpers');
+const { slugify, clientIp, startOfDay, startOfWeek } = require('../utils/helpers');
 const Slide = require('../models/Slide');
 
 const router = express.Router();
@@ -211,7 +211,11 @@ router.get('/products', requireAdmin, async (req, res, next) => {
     if (sort === 'price-asc') sortSpec.price = 1;
     if (sort === 'price-desc') sortSpec.price = -1;
     const products = await Product.find(filter).sort(sortSpec);
-    res.json({ products, categories: CATEGORIES });
+    const settings = await getSettings();
+    res.json({
+      products,
+      categories: settings.categories.map((c) => c.name),
+    });
   } catch (err) {
     next(err);
   }
@@ -302,6 +306,106 @@ router.patch('/products/bulk', requireAdmin, async (req, res, next) => {
     }
     res.json({ message: `Bulk ${action} complete (${ids.length} items)` });
   } catch (err) {
+    next(err);
+  }
+});
+
+/* ─────────────────────── CATEGORIES ─────────────────────── */
+
+function categoryCounts() {
+  return Product.aggregate([
+    { $group: { _id: '$category', count: { $sum: 1 } } },
+  ]);
+}
+
+router.get('/categories', requireAdmin, async (req, res, next) => {
+  try {
+    const s = await getSettings();
+    const rows = await categoryCounts();
+    const counts = {};
+    rows.forEach((r) => (counts[r._id] = r.count));
+    const categories = (s.categories || []).map((c) => ({
+      id: c.id,
+      name: c.name,
+      count: counts[c.name] || 0,
+    }));
+    res.json({ categories });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.put('/categories', requireAdmin, async (req, res, next) => {
+  try {
+    const { categories } = req.body || {};
+    if (!Array.isArray(categories)) {
+      return res.status(400).json({ message: 'categories must be an array' });
+    }
+
+    const s = await getSettings();
+    const oldById = {};
+    (s.categories || []).forEach((c) => (oldById[c.id] = c.name));
+
+    const seen = new Set();
+    const next = [];
+    for (const raw of categories) {
+      const name = String(raw && raw.name ? raw.name : '').trim();
+      if (!name) return res.status(400).json({ message: 'Category names cannot be empty.' });
+      const low = name.toLowerCase();
+      if (seen.has(low)) {
+        return res.status(400).json({ message: `Duplicate category: "${name}".` });
+      }
+      seen.add(low);
+      const requestedId = raw && typeof raw.id === 'string' ? raw.id : '';
+      const id =
+        requestedId && oldById[requestedId] !== undefined ? requestedId : `${slugify(name)}-${Date.now().toString(36)}`;
+      next.push({ id, name });
+    }
+
+    const newNameById = {};
+    next.forEach((c) => (newNameById[c.id] = c.name));
+
+    const removed = [];
+    (s.categories || []).forEach((c) => {
+      if (newNameById[c.id] === undefined) removed.push(c);
+    });
+
+    if (removed.length) {
+      await Promise.all(
+        removed.map(async (c) => {
+          const cnt = await Product.countDocuments({ category: c.name });
+          if (cnt > 0) {
+            const err = new Error(
+              `Cannot remove "${c.name}" — ${cnt} product(s) still use it. Reassign those products first.`
+            );
+            err.status = 400;
+            throw err;
+          }
+        })
+      );
+    }
+
+    for (const c of next) {
+      const oldName = oldById[c.id];
+      if (oldName && oldName !== c.name) {
+        await Product.updateMany(
+          { category: oldName },
+          { $set: { category: c.name, updatedAt: new Date() } }
+        );
+      }
+    }
+
+    s.categories = next;
+    await s.save();
+
+    const rows = await categoryCounts();
+    const counts = {};
+    rows.forEach((r) => (counts[r._id] = r.count));
+    res.json({
+      categories: next.map((c) => ({ id: c.id, name: c.name, count: counts[c.name] || 0 })),
+    });
+  } catch (err) {
+    if (err.status === 400) return res.status(400).json({ message: err.message });
     next(err);
   }
 });
