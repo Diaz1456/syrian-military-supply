@@ -6,7 +6,7 @@ import Newsletter from './Newsletter';
 export default function Footer({ settings, showNewsletter }) {
   const { rank, visits } = useVisit();
   const pct = Math.min(100, (visits / 25) * 100);
-  const storeName = settings?.storeName || 'Syrian Military Supply';
+  const storeName = settings?.storeName || '';
 
   return (
     <>

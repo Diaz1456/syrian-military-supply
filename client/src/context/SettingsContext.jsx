@@ -1,26 +1,15 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import api from '../api';
 
-const CACHE_KEY = 'sms_settings_cache';
-
-const SettingsContext = createContext({ settings: null, refresh: () => {}, publish: () => {} });
+const SettingsContext = createContext({ settings: null, loaded: false, refresh: () => {}, publish: () => {} });
 
 export function SettingsProvider({ children }) {
-  const [settings, setSettings] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
-    } catch {
-      return null;
-    }
-  });
+  const [settings, setSettings] = useState(null);
+  const [loaded, setLoaded] = useState(false);
 
   const publish = useCallback((next) => {
     setSettings(next);
-    try {
-      localStorage.setItem(CACHE_KEY, JSON.stringify(next));
-    } catch {
-      /* ignore */
-    }
+    setLoaded(true);
   }, []);
 
   const refresh = useCallback(() => {
@@ -37,7 +26,7 @@ export function SettingsProvider({ children }) {
   }, [refresh]);
 
   return (
-    <SettingsContext.Provider value={{ settings, refresh, publish }}>
+    <SettingsContext.Provider value={{ settings, loaded, refresh, publish }}>
       {children}
     </SettingsContext.Provider>
   );

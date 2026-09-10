@@ -63,6 +63,33 @@ router.get('/slides', async (req, res, next) => {
   }
 });
 
+router.get('/home', async (req, res, next) => {
+  try {
+    const [slides, featured, newArrivals, bestSellers, deal, total, feedback] = await Promise.all([
+      Slide.find({ enabled: true }).sort({ sortOrder: 1, createdAt: 1 }),
+      Product.find({ status: 'active', featured: true }).limit(6),
+      Product.find({ status: 'active' }).sort(parseSort('newest')).limit(10),
+      Product.find({ status: 'active' }).sort(parseSort('popular')).limit(10),
+      Product.findOne({ status: 'active', salePrice: { $gt: 0 }, $expr: { $lt: ['$salePrice', '$price'] } }),
+      Product.countDocuments({ status: 'active' }),
+      Feedback.find({}, { rating: 1 }),
+    ]);
+    const rating = feedback.length
+      ? feedback.reduce((a, b) => a.rating + b.rating, 0) / feedback.length
+      : 0;
+    res.json({
+      slides,
+      featured,
+      newArrivals,
+      bestSellers,
+      deal,
+      stats: { count: total, rating },
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.get('/products/search', async (req, res, next) => {
   try {
     const q = (req.query.q || '').trim();

@@ -11,14 +11,13 @@ export default function Header({ settings }) {
   const navigate = useNavigate();
 
   const close = () => setOpen(false);
-  const threshold = settings?.freeShippingThreshold ?? 150;
-  const storeName = settings?.storeName || 'Syrian Military Supply';
+  const storeName = settings?.storeName || '';
 
   return (
     <header className="site-header">
       <div className="topbar">
         <div className="container">
-          <span className="topbar-left">Free shipping ${threshold}+</span>
+          <span className="topbar-left">{settings?.freeShippingThreshold != null && `Free shipping $${settings.freeShippingThreshold}+`}</span>
           <span className="topbar-right">
             <span className="muted" style={{ color: '#6f756e' }}>{rank.icon}</span>
             {rank.name} · {visits} visits

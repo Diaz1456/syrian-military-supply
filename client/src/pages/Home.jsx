@@ -103,21 +103,21 @@ export default function Home() {
   }, [heroes.length]);
 
   useEffect(() => {
-    api.get('/slides').then((r) => setSlides(r.data.slides || [])).catch(() => {});
-    api.get('/products/featured').then((r) => setFeatured(r.data.featured || [])).catch(() => {});
-    api.get('/products', { params: { sort: 'newest', limit: 10 } }).then((r) => setNewArrivals(r.data.products || [])).catch(() => {});
-    api.get('/products', { params: { sort: 'popular', limit: 10 } }).then((r) => setBestSellers(r.data.products || [])).catch(() => {});
-    api.get('/categories').then((r) => setCategories(r.data.categories || [])).catch(() => {});
-    api.get('/products/deal').then((r) => setDeal(r.data.deal)).catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    Promise.all([api.get('/products'), api.get('/feedback', { params: { sort: 'newest', limit: 100 } })])
-      .then(([p, f]) => {
-        const fb = (f.data && f.data.feedback) || [];
-        setStats({ count: p.data.total || p.data.products.length, rating: fb.length ? fb.reduce((a, b) => a + b.rating, 0) / fb.length : 0 });
+    let on = true;
+    api
+      .get('/home')
+      .then((r) => {
+        if (!on) return;
+        setSlides(r.data.slides || []);
+        setFeatured(r.data.featured || []);
+        setNewArrivals(r.data.newArrivals || []);
+        setBestSellers(r.data.bestSellers || []);
+        setDeal(r.data.deal || null);
+        setStats(r.data.stats || { count: 0, rating: 0 });
       })
       .catch(() => {});
+    api.get('/categories').then((r) => on && setCategories(r.data.categories || [])).catch(() => {});
+    return () => { on = false; };
   }, []);
 
   return (
