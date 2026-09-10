@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import api from './api';
+import { useSettings } from './context/SettingsContext';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -36,15 +36,12 @@ const PublicLayout = ({ settings, children }) => (
 );
 
 export default function App() {
-  const [settings, setSettings] = useState(null);
+  const { settings, refresh } = useSettings();
   const location = useLocation();
 
-  useEffect(() => {
-    api
-      .get('/settings/public')
-      .then((res) => setSettings(res.data))
-      .catch(() => {});
-  }, [location.pathname]);
+  React.useEffect(() => {
+    refresh();
+  }, [location.pathname, location.search, refresh]);
 
   return (
     <Routes>

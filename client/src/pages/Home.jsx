@@ -136,7 +136,7 @@ export default function Home() {
               <Link to={`/product/${deal._id}`} className="deal-flag">
                 <span className="now">Deal of the day</span>
                 <b>{deal.name}</b>
-                <b>${(deal.salePrice || deal.price).toFixed(2)}</b>
+                <b>${Number(deal.salePrice || deal.price || 0).toFixed(2)}</b>
               </Link>
             )}
           </div>

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api';
+import { useSettings } from '../context/SettingsContext';
 
 export default function AdminSettings() {
+  const { publish } = useSettings();
   const [settings, setSettings] = useState(null);
   const [saved, setSaved] = useState(false);
   const [err, setErr] = useState('');
@@ -19,6 +21,7 @@ export default function AdminSettings() {
     try {
       const { data } = await api.put('/admin/settings', settings);
       setSettings(data.settings);
+      publish(data.settings);
       setSaved(true);
     } catch (e2) {
       setErr(e2.response?.data?.message || 'Save failed');
