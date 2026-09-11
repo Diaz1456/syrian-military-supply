@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api';
+import { useLanguage } from '../context/LanguageContext';
 
 function deviceOf(ua) {
   if (!ua) return 'unknown';
@@ -9,6 +10,7 @@ function deviceOf(ua) {
 }
 
 export default function Visitors() {
+  const { t } = useLanguage();
   const [visitors, setVisitors] = useState([]);
   const [q, setQ] = useState('');
   const [page, setPage] = useState(1);
@@ -26,18 +28,18 @@ export default function Visitors() {
   };
 
   useEffect(() => {
-    const t = setTimeout(load, 250);
-    return () => clearTimeout(t);
+    const timer = setTimeout(load, 250);
+    return () => clearTimeout(timer);
   }, [q, page]);
 
   const remove = async (v) => {
-    if (!window.confirm('Delete this visitor session?')) return;
+    if (!window.confirm(t('admin_confirm_delete_visitor'))) return;
     await api.delete(`/admin/visitors/${v._id}`);
     load();
   };
 
   const clearAll = async () => {
-    if (!window.confirm('Delete ALL visitor sessions forever?')) return;
+    if (!window.confirm(t('admin_confirm_clear_visitors'))) return;
     await api.delete('/admin/visitors');
     load();
   };
@@ -52,32 +54,32 @@ export default function Visitors() {
   return (
     <>
       <div className="admin-topbar">
-        <h1>Visitor Log</h1>
-        <button className="btn small danger" onClick={clearAll}>Clear All</button>
+        <h1>{t('admin_visitors_title')}</h1>
+        <button className="btn small danger" onClick={clearAll}>{t('admin_clear_all')}</button>
       </div>
 
       <div className="table-tools">
-        <input placeholder="Search IP / visitor ID…" value={q} onChange={(e) => { setQ(e.target.value); setPage(1); }} />
-        <span className="muted">{total} sessions</span>
+        <input placeholder={t('admin_search_visitor')} value={q} onChange={(e) => { setQ(e.target.value); setPage(1); }} />
+        <span className="muted">{t('admin_n_sessions', { count: total })}</span>
       </div>
 
       <div style={{ overflowX: 'auto' }}>
         <table className="data-table">
           <thead>
             <tr>
-              <th>IP</th>
-              <th>Visitor ID</th>
-              <th>Device</th>
-              <th>Pages</th>
-              <th>Entry</th>
-              <th>Exit</th>
-              <th>Duration</th>
-              <th>Visits</th>
+              <th>{t('admin_ip')}</th>
+              <th>{t('admin_visitor_id')}</th>
+              <th>{t('admin_device')}</th>
+              <th>{t('admin_pages')}</th>
+              <th>{t('admin_entry')}</th>
+              <th>{t('admin_exit')}</th>
+              <th>{t('admin_duration')}</th>
+              <th>{t('admin_visits')}</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {visitors.length === 0 && <tr><td colSpan="9" className="muted">No visitor sessions recorded.</td></tr>}
+            {visitors.length === 0 && <tr><td colSpan="9" className="muted">{t('admin_no_visitors')}</td></tr>}
             {visitors.map((v) => (
               <tr key={v._id}>
                 <td style={{ fontFamily: 'monospace', fontSize: '0.8rem' }}>{v.ip || '—'}</td>
@@ -85,10 +87,10 @@ export default function Visitors() {
                 <td>{v.device || deviceOf(v.userAgent)}</td>
                 <td>{v.pagesVisited?.length || 0}</td>
                 <td>{v.entryTime ? new Date(v.entryTime).toLocaleString() : '—'}</td>
-                <td>{v.exitTime ? new Date(v.exitTime).toLocaleString() : <span className="pill-status pending">Live</span>}</td>
+                <td>{v.exitTime ? new Date(v.exitTime).toLocaleString() : <span className="pill-status pending">{t('admin_live')}</span>}</td>
                 <td>{fmt(v.duration)}</td>
                 <td>{v.visitCount}</td>
-                <td><button className="btn small danger" onClick={() => remove(v)}>Delete</button></td>
+                <td><button className="btn small danger" onClick={() => remove(v)}>{t('admin_delete')}</button></td>
               </tr>
             ))}
           </tbody>

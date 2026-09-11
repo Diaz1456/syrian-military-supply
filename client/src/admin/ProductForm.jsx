@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../api';
+import { useLanguage } from '../context/LanguageContext';
 
 const CATEGORIES = [
   'Tactical Apparel', 'Footwear', 'Gear & Packs', 'Optics', 'Knives & Tools',
@@ -14,6 +15,7 @@ const empty = {
 };
 
 export default function ProductForm() {
+  const { t } = useLanguage();
   const { id } = useParams();
   const isEdit = Boolean(id);
   const navigate = useNavigate();
@@ -53,16 +55,16 @@ export default function ProductForm() {
         });
         setExistingImgs(p.images || []);
       })
-      .catch((e) => setError(e.response?.data?.message || 'Failed to load product'))
+      .catch((e) => setError(e.response?.data?.message || t('admin_failed_load')))
       .finally(() => setLoading(false));
   }, [id]);
 
   const submit = async (e) => {
     e.preventDefault();
     setError('');
-    if (!form.name.trim()) return setError('Product name is required.');
-    if (!isEdit && images.length === 0) return setError('Upload at least one product image.');
-    if (!form.price || isNaN(form.price) || Number(form.price) < 0) return setError('Enter a valid price.');
+    if (!form.name.trim()) return setError(t('admin_err_name'));
+    if (!isEdit && images.length === 0) return setError(t('admin_err_image'));
+    if (!form.price || isNaN(form.price) || Number(form.price) < 0) return setError(t('admin_err_price'));
 
     const fd = new FormData();
     Object.entries(form).forEach(([k, v]) => fd.append(k, k === 'featured' ? (v ? 'true' : 'false') : String(v ?? '')));
@@ -73,7 +75,7 @@ export default function ProductForm() {
       else await api.post('/admin/products', fd);
       navigate('/admin/products');
     } catch (err) {
-      setError(err.response?.data?.message || 'Save failed');
+      setError(err.response?.data?.message || t('admin_save_failed'));
       setBusy(false);
     }
   };
@@ -83,49 +85,49 @@ export default function ProductForm() {
   return (
     <>
       <div className="admin-topbar">
-        <h1>{isEdit ? 'Edit Product' : 'Add New Product'}</h1>
-        <button className="btn" onClick={() => navigate('/admin/products')}>← Cancel</button>
+        <h1>{isEdit ? t('admin_edit_product') : t('admin_new_product')}</h1>
+        <button className="btn" onClick={() => navigate('/admin/products')}>← {t('admin_cancel_btn')}</button>
       </div>
 
       <form onSubmit={submit}>
         <div className="dash-grid" style={{ marginTop: 0 }}>
           <div className="dash-panel">
-            <h3>Basics</h3>
+            <h3>{t('admin_basics')}</h3>
             <div className="form-grid">
-              <div className="form-group"><label>Name *</label><input value={form.name} onChange={set('name')} /></div>
-              <div className="form-group"><label>SKU</label><input value={form.sku} onChange={set('sku')} placeholder="SMS-XXX-001" /></div>
+              <div className="form-group"><label>{t('admin_name')}</label><input value={form.name} onChange={set('name')} /></div>
+              <div className="form-group"><label>{t('admin_sku')}</label><input value={form.sku} onChange={set('sku')} placeholder="SMS-XXX-001" /></div>
               <div className="form-group">
-                <label>Category</label>
+                <label>{t('admin_category')}</label>
                 <select value={form.category} onChange={set('category')}>
                   {categories.map((c) => <option key={c}>{c}</option>)}
                 </select>
               </div>
               <div className="form-group">
-                <label>Status</label>
+                <label>{t('admin_status')}</label>
                 <select value={form.status} onChange={set('status')}>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
+                  <option value="active">{t('admin_active')}</option>
+                  <option value="inactive">{t('admin_inactive')}</option>
                 </select>
               </div>
-              <div className="form-group"><label>Price ($) *</label><input type="number" step="0.01" min="0" value={form.price} onChange={set('price')} /></div>
-              <div className="form-group"><label>Sale Price ($)</label><input type="number" step="0.01" min="0" value={form.salePrice ?? ''} onChange={set('salePrice')} /></div>
-              <div className="form-group"><label>Stock *</label><input type="number" min="0" value={form.stock} onChange={set('stock')} /></div>
+              <div className="form-group"><label>{t('admin_price')}</label><input type="number" step="0.01" min="0" value={form.price} onChange={set('price')} /></div>
+              <div className="form-group"><label>{t('admin_sale_price')}</label><input type="number" step="0.01" min="0" value={form.salePrice ?? ''} onChange={set('salePrice')} /></div>
+              <div className="form-group"><label>{t('admin_stock')}</label><input type="number" min="0" value={form.stock} onChange={set('stock')} /></div>
               <div className="form-group full">
-                <label>Description</label>
+                <label>{t('admin_description')}</label>
                 <textarea value={form.description} onChange={set('description')} />
               </div>
               <label className="form-group full" style={{ flexDirection: 'row', alignItems: 'center', gap: 10, fontFamily: 'var(--font-head)' }}>
                 <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} />
-                Mark as Featured (homepage hero row)
+                {t('admin_featured')}
               </label>
             </div>
           </div>
 
           <div className="dash-panel">
-            <h3>Images — Upload to Cloudinary</h3>
+            <h3>{t('admin_images')}</h3>
             {existingImgs.length > 0 && (
               <>
-                <p className="muted" style={{ fontSize: '0.82rem', marginBottom: 8 }}>Current images (upload new ones below to replace them):</p>
+                <p className="muted" style={{ fontSize: '0.82rem', marginBottom: 8 }}>{t('admin_current_images')}</p>
                 <div className="img-stack">
                   {existingImgs.map((img, i) => (
                     <img key={i} src={img.url} alt="" />
@@ -147,24 +149,26 @@ export default function ProductForm() {
                     <img key={i} src={URL.createObjectURL(img)} alt="" />
                   ))}
                 </div>
-                <p className="muted" style={{ fontSize: '0.8rem', marginTop: 8 }}>{images.length} file(s) staged{isEdit ? ' — these will replace the current images' : ''}. Max 8 files, 10 MB each.</p>
+                <p className="muted" style={{ fontSize: '0.8rem', marginTop: 8 }}>
+                  {t('admin_files_staged', { count: images.length, replace: isEdit ? t('admin_replace_imgs') : '' })}
+                </p>
               </>
             )}
 
-            <h3 className="mt-24">Spec Sheet</h3>
+            <h3 className="mt-24">{t('admin_specs')}</h3>
             <div className="form-grid mt-8">
-              <div className="form-group"><label>Material</label><input value={form.material} onChange={set('material')} /></div>
-              <div className="form-group"><label>Weight</label><input value={form.weight} onChange={set('weight')} /></div>
-              <div className="form-group"><label>Capacity</label><input value={form.capacity} onChange={set('capacity')} /></div>
-              <div className="form-group"><label>Color</label><input value={form.color} onChange={set('color')} /></div>
-              <div className="form-group full"><label>Origin</label><input value={form.origin} onChange={set('origin')} /></div>
+              <div className="form-group"><label>{t('admin_material')}</label><input value={form.material} onChange={set('material')} /></div>
+              <div className="form-group"><label>{t('admin_weight')}</label><input value={form.weight} onChange={set('weight')} /></div>
+              <div className="form-group"><label>{t('admin_capacity')}</label><input value={form.capacity} onChange={set('capacity')} /></div>
+              <div className="form-group"><label>{t('admin_color')}</label><input value={form.color} onChange={set('color')} /></div>
+              <div className="form-group full"><label>{t('admin_origin')}</label><input value={form.origin} onChange={set('origin')} /></div>
             </div>
           </div>
         </div>
 
         {error && <div className="field-error mt-8">{error}</div>}
         <button className="btn primary block mt-16" type="submit" disabled={busy}>
-          {busy ? 'Saving…' : isEdit ? 'Save Changes' : 'Create Product'}
+          {busy ? t('admin_saving') : isEdit ? t('admin_save_changes') : t('admin_create_product')}
         </button>
       </form>
     </>

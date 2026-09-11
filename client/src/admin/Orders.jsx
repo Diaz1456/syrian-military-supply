@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api';
+import { useLanguage } from '../context/LanguageContext';
 
 const STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
-const LABELS = { pending: 'Pending', processing: 'Processing', shipped: 'Shipped', delivered: 'Delivered', cancelled: 'Cancelled' };
 
 export default function Orders() {
+  const { t } = useLanguage();
   const [orders, setOrders] = useState([]);
   const [filter, setFilter] = useState('all');
   const [q, setQ] = useState('');
@@ -17,8 +18,8 @@ export default function Orders() {
   };
 
   useEffect(() => {
-    const t = setTimeout(load, 200);
-    return () => clearTimeout(t);
+    const timer = setTimeout(load, 200);
+    return () => clearTimeout(timer);
   }, [filter, q]);
 
   const setStatus = async (id, status) => {
@@ -29,22 +30,22 @@ export default function Orders() {
   return (
     <>
       <div className="admin-topbar">
-        <h1>Order Management</h1>
+        <h1>{t('admin_orders_title')}</h1>
       </div>
 
       <div className="table-tools">
         <div className="checkbar">
-          <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>All</button>
+          <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>{t('admin_all')}</button>
           {STATUSES.map((s) => (
-            <button key={s} className={filter === s ? 'active' : ''} onClick={() => setFilter(s)}>{LABELS[s]}</button>
+            <button key={s} className={filter === s ? 'active' : ''} onClick={() => setFilter(s)}>{t(`oc_${s}`)}</button>
           ))}
         </div>
         <div style={{ flex: 1 }} />
-        <input placeholder="Search name / email…" value={q} onChange={(e) => setQ(e.target.value)} />
+        <input placeholder={t('admin_search_order')} value={q} onChange={(e) => setQ(e.target.value)} />
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {orders.length === 0 && <p className="muted">No orders found.</p>}
+        {orders.length === 0 && <p className="muted">{t('admin_no_orders')}</p>}
         {orders.map((o) => {
           const open = expanded === o._id;
           return (
@@ -59,17 +60,20 @@ export default function Orders() {
                 <span className="muted" style={{ fontSize: '0.82rem' }}>{new Date(o.createdAt).toLocaleString()}</span>
                 <span style={{ flex: 1 }} />
                 <span style={{ fontFamily: 'var(--font-head)' }}>${Number(o.total).toFixed(2)}</span>
-                <span className={`pill-status ${o.status}`}>{LABELS[o.status]}</span>
-                <span className="section-link">{open ? '▲ Collapse' : '▼ Details'}</span>
+                <span className={`pill-status ${o.status}`}>{t(`oc_${o.status}`)}</span>
+                <span className="section-link">{open ? t('admin_collapse') : t('admin_details')}</span>
               </button>
 
               {open && (
                 <div style={{ padding: '8px 16px 18px', borderTop: '1px dashed #2e333b' }}>
                   <p className="muted" style={{ fontSize: '0.85rem', marginBottom: 10 }}>
-                    Ship to: {o.customer.address}, {o.customer.city} {o.customer.state} {o.customer.zip}, {o.customer.country} · {o.customer.phone || 'no phone'}
+                    {t('admin_ship_to', {
+                      addr: `${o.customer.address}, ${o.customer.city} ${o.customer.state} ${o.customer.zip}, ${o.customer.country}`,
+                      phone: o.customer.phone || t('admin_no_phone'),
+                    })}
                   </p>
                   <table className="data-table" style={{ marginBottom: 16 }}>
-                    <thead><tr><th>Item</th><th>Qty</th><th>Unit</th><th>Line</th></tr></thead>
+                    <thead><tr><th>{t('admin_item')}</th><th>{t('admin_qty')}</th><th>{t('admin_unit')}</th><th>{t('admin_line')}</th></tr></thead>
                     <tbody>
                       {o.items.map((it, i) => (
                         <tr key={i}>
@@ -82,10 +86,10 @@ export default function Orders() {
                     </tbody>
                   </table>
                   <div style={{ display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
-                    <span className="muted" style={{ fontFamily: 'var(--font-head)', textTransform: 'uppercase', fontSize: '0.8rem' }}>Update status:</span>
+                    <span className="muted" style={{ fontFamily: 'var(--font-head)', textTransform: 'uppercase', fontSize: '0.8rem' }}>{t('admin_update_status')}</span>
                     {STATUSES.map((s) => (
                       <button key={s} className={`btn small ${o.status === s ? 'primary' : 'ghost'}`} onClick={() => setStatus(o._id, s)} disabled={o.status === s}>
-                        {LABELS[s]}
+                        {t(`oc_${s}`)}
                       </button>
                     ))}
                   </div>

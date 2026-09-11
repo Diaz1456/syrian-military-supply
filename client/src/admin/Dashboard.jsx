@@ -2,16 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api';
 import StarRating from '../components/StarRating';
+import { useLanguage } from '../context/LanguageContext';
 
-const ORDER_STATUS = { pending: 'Pending', processing: 'Processing', shipped: 'Shipped', delivered: 'Delivered', cancelled: 'Cancelled' };
+const ORDER_STATUS = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 
 export default function Dashboard() {
+  const { t } = useLanguage();
   const [data, setData] = useState(null);
   const [err, setErr] = useState('');
 
   useEffect(() => {
-    api.get('/admin/dashboard').then((r) => setData(r.data)).catch((e) => setErr(e.response?.data?.message || 'Failed to load'));
+    api.get('/admin/dashboard').then((r) => setData(r.data)).catch((e) => setErr(e.response?.data?.message || t('dash_failed_load')));
   }, []);
+
+  const statusLabel = (s) => (ORDER_STATUS.includes(s) ? t(`oc_${s}`) : s);
 
   if (err) return <div className="muted">{err}</div>;
   if (!data) return <div className="spinner" />;
@@ -23,24 +27,24 @@ export default function Dashboard() {
   return (
     <>
       <div className="admin-topbar">
-        <h1>Overview</h1>
+        <h1>{t('admin_overview')}</h1>
       </div>
 
       <div className="stat-grid">
-        <div className="stat-card"><div className="label">Total Visits</div><div className="value">{visitors.totalVisits}</div><div className="sub">All recorded sessions</div></div>
-        <div className="stat-card good"><div className="label">Unique Visitors</div><div className="value">{visitors.uniqueVisitors}</div><div className="sub">Distinct visitor IDs</div></div>
-        <div className="stat-card"><div className="label">Visits Today</div><div className="value">{visitors.visitsToday}</div><div className="sub">{visitors.visitsWeek} this week</div></div>
-        <div className="stat-card warn"><div className="label">Orders</div><div className="value">{sales.totalOrders}</div><div className="sub">{sales.ordersToday} today · {sales.pendingOrders} pending</div></div>
-        <div className="stat-card bad"><div className="label">Revenue</div><div className="value">${revenue}</div><div className="sub">Excludes cancelled</div></div>
-        <div className="stat-card warn"><div className="label">Low Stock Alert</div><div className="value">{lowStock.length}</div><div className="sub">Items ≤ 5 units</div></div>
+        <div className="stat-card"><div className="label">{t('dash_total_visits')}</div><div className="value">{visitors.totalVisits}</div><div className="sub">{t('dash_all_sessions')}</div></div>
+        <div className="stat-card good"><div className="label">{t('dash_unique_visitors')}</div><div className="value">{visitors.uniqueVisitors}</div><div className="sub">{t('dash_distinct_ids')}</div></div>
+        <div className="stat-card"><div className="label">{t('dash_visits_today')}</div><div className="value">{visitors.visitsToday}</div><div className="sub">{t('dash_this_week', { count: visitors.visitsWeek })}</div></div>
+        <div className="stat-card warn"><div className="label">{t('dash_orders')}</div><div className="value">{sales.totalOrders}</div><div className="sub">{t('dash_today_pending', { today: sales.ordersToday, pending: sales.pendingOrders })}</div></div>
+        <div className="stat-card bad"><div className="label">{t('dash_revenue')}</div><div className="value">${revenue}</div><div className="sub">{t('dash_excl_cancelled')}</div></div>
+        <div className="stat-card warn"><div className="label">{t('dash_low_stock')}</div><div className="value">{lowStock.length}</div><div className="sub">{t('dash_low_stock_sub')}</div></div>
       </div>
 
       <div className="dash-grid">
         <div className="dash-panel">
-          <h3>Peak Operating Hours</h3>
+          <h3>{t('dash_peak_hours')}</h3>
           <div className="bar-chart">
             {visitors.peakHours.map((h) => (
-              <div className="bar-col" key={h.hour} title={`${h.hour}:00 — ${h.count} visits`}>
+              <div className="bar-col" key={h.hour} title={t('dash_hour_title', { hour: h.hour, count: h.count })}>
                 <div className="bar" style={{ height: `${Math.max(4, (h.count / maxHour) * 100)}%` }} />
                 <div className="bar-label">{h.hour}h</div>
               </div>
@@ -49,22 +53,22 @@ export default function Dashboard() {
         </div>
 
         <div className="dash-panel">
-          <h3>Top Gear (By Sales)</h3>
-          {topProducts.length === 0 && <p className="muted">No sales data yet.</p>}
+          <h3>{t('dash_top_gear')}</h3>
+          {topProducts.length === 0 && <p className="muted">{t('dash_no_sales')}</p>}
           {topProducts.map((p) => (
             <div key={p._id} className="summary-row">
               <span style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                 <img src={p.images?.[0]?.url} className="thumb" alt="" style={{ width: 34, height: 34 }} />
                 <Link to={`/admin/products/${p._id}/edit`}>{p.name}</Link>
               </span>
-              <span className="muted">{p.salesCount} sold · {p.views} views</span>
+              <span className="muted">{t('dash_sold_views', { sold: p.salesCount, views: p.views })}</span>
             </div>
           ))}
         </div>
 
         <div className="dash-panel">
-          <h3>Recent Orders</h3>
-          {recentOrders.length === 0 && <p className="muted">No orders yet.</p>}
+          <h3>{t('dash_recent_orders')}</h3>
+          {recentOrders.length === 0 && <p className="muted">{t('dash_no_orders')}</p>}
           {recentOrders.map((o) => (
             <div key={o._id} className="summary-row">
               <span>
@@ -73,20 +77,20 @@ export default function Dashboard() {
               </span>
               <span style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                 <span>${Number(o.total).toFixed(2)}</span>
-                <span className={`pill-status ${o.status}`}>{ORDER_STATUS[o.status]}</span>
+                <span className={`pill-status ${o.status}`}>{statusLabel(o.status)}</span>
               </span>
             </div>
           ))}
         </div>
 
         <div className="dash-panel">
-          <h3>Recent Reviews</h3>
-          {recentFeedback.length === 0 && <p className="muted">No feedback yet.</p>}
+          <h3>{t('dash_recent_reviews')}</h3>
+          {recentFeedback.length === 0 && <p className="muted">{t('dash_no_feedback')}</p>}
           {recentFeedback.map((f) => (
             <div key={f._id} className="summary-row">
               <span>
                 <StarRating value={f.rating} />
-                <span className="muted" style={{ display: 'block', fontSize: '0.78rem' }}>{f.name || 'Anonymous'}</span>
+                <span className="muted" style={{ display: 'block', fontSize: '0.78rem' }}>{f.name || t('pd_anonymous')}</span>
               </span>
               <span style={{ maxWidth: '55%', textAlign: 'right', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '0.85rem' }}>
                 {f.message}
@@ -98,17 +102,17 @@ export default function Dashboard() {
 
       {lowStock.length > 0 && (
         <div className="dash-panel" style={{ marginTop: 20 }}>
-          <h3 style={{ color: 'var(--warn)' }}>Low / Out of Stock</h3>
+          <h3 style={{ color: 'var(--warn)' }}>{t('dash_low_out')}</h3>
           <table className="data-table">
-            <thead><tr><th>Item</th><th>Category</th><th>Stock</th><th>Price</th><th></th></tr></thead>
+            <thead><tr><th>{t('admin_item')}</th><th>{t('admin_category')}</th><th>{t('admin_stock')}</th><th>{t('admin_price')}</th><th></th></tr></thead>
             <tbody>
               {lowStock.map((p) => (
                 <tr key={p._id}>
                   <td style={{ fontWeight: 600 }}>{p.name}</td>
                   <td>{p.category}</td>
-                  <td><span className={`pill-status ${p.stock <= 0 ? 'cancelled' : 'pending'}`}>{p.stock <= 0 ? 'Out of stock' : `${p.stock} left`}</span></td>
+                  <td><span className={`pill-status ${p.stock <= 0 ? 'cancelled' : 'pending'}`}>{p.stock <= 0 ? t('status_out') : t('dash_left', { count: p.stock })}</span></td>
                   <td>${Number(p.price).toFixed(2)}</td>
-                  <td><Link className="section-link" to={`/admin/products/${p._id}/edit`}>Restock →</Link></td>
+                  <td><Link className="section-link" to={`/admin/products/${p._id}/edit`}>{t('dash_restock')}</Link></td>
                 </tr>
               ))}
             </tbody>

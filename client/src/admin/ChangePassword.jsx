@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function ChangePassword() {
   const { admin, changePassword } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const mustChange = admin?.forcePasswordChange;
   const [currentPassword, setCurrentPassword] = useState('');
@@ -16,14 +18,14 @@ export default function ChangePassword() {
   const submit = async (e) => {
     e.preventDefault();
     setError('');
-    if (newPassword.length < 8) return setError('New password must be at least 8 characters.');
-    if (newPassword !== confirm) return setError('Passwords do not match.');
+    if (newPassword.length < 8) return setError(t('admin_err_pw_len'));
+    if (newPassword !== confirm) return setError(t('admin_err_pw_match'));
     setBusy(true);
     try {
       await changePassword({ currentPassword, newPassword });
       setDone(true);
     } catch (err) {
-      setError(err.response?.data?.message || 'Password change failed');
+      setError(err.response?.data?.message || t('admin_err_pw_fail'));
     } finally {
       setBusy(false);
     }
@@ -32,10 +34,10 @@ export default function ChangePassword() {
   if (done) {
     return (
       <>
-        <div className="admin-topbar"><h1>Password Updated</h1></div>
+        <div className="admin-topbar"><h1>{t('admin_pw_updated')}</h1></div>
         <div className="panel">
-          <p style={{ color: 'var(--good)' }}>✔ New passphrase is active. Your session has been refreshed.</p>
-          <button className="btn primary mt-16" onClick={() => navigate('/admin')}>Go to Dashboard</button>
+          <p style={{ color: 'var(--good)' }}>{t('admin_pw_active')}</p>
+          <button className="btn primary mt-16" onClick={() => navigate('/admin')}>{t('admin_go_dashboard')}</button>
         </div>
       </>
     );
@@ -44,31 +46,31 @@ export default function ChangePassword() {
   return (
     <>
       <div className="admin-topbar">
-        <h1>{mustChange ? 'Set Your New Password' : 'Change Password'}</h1>
+        <h1>{mustChange ? t('admin_set_new_pw') : t('admin_change_pw_title')}</h1>
       </div>
       {mustChange && (
         <div className="status-banner" style={{ borderLeftColor: 'var(--flag-red)', maxWidth: 560 }}>
-          You must replace the default password before continuing.
+          {t('admin_must_change')}
         </div>
       )}
       <form onSubmit={submit} className="panel" style={{ maxWidth: 480 }}>
         <div className="form-grid">
           <div className="form-group full">
-            <label>Current Password</label>
+            <label>{t('admin_current_pw')}</label>
             <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required autoFocus />
           </div>
           <div className="form-group full">
-            <label>New Password (min 8 chars)</label>
+            <label>{t('admin_new_pw')}</label>
             <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
           </div>
           <div className="form-group full">
-            <label>Confirm New Password</label>
+            <label>{t('admin_confirm_pw')}</label>
             <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required />
           </div>
         </div>
         {error && <div className="field-error mt-8">{error}</div>}
         <button className="btn primary mt-16" type="submit" disabled={busy}>
-          {busy ? 'Updating…' : mustChange ? 'Set Passphrase' : 'Update Passphrase'}
+          {busy ? t('admin_updating') : mustChange ? t('admin_set_pw') : t('admin_update_pw')}
         </button>
       </form>
     </>

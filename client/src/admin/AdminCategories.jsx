@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function AdminCategories() {
+  const { t } = useLanguage();
   const [cats, setCats] = useState([]);
   const [counts, setCounts] = useState({});
   const [newName, setNewName] = useState('');
@@ -18,7 +20,7 @@ export default function AdminCategories() {
         (r.data.categories || []).forEach((x) => (c[x.name] = x.count));
         setCounts(c);
       })
-      .catch((e) => setErr(e.response?.data?.message || 'Failed to load categories'));
+      .catch((e) => setErr(e.response?.data?.message || t('admin_save_failed')));
   };
 
   useEffect(() => {
@@ -31,7 +33,7 @@ export default function AdminCategories() {
     const name = newName.trim();
     if (!name) return;
     const dup = cats.some((c) => c.name.toLowerCase() === name.toLowerCase());
-    if (dup) return setErr(`Category "${name}" already exists.`);
+    if (dup) return setErr(t('admin_cat_dup', { name }));
     setCats([...cats, { id: `new-${Date.now()}`, name, isNew: true, count: 0 }]);
     setNewName('');
   };
@@ -57,9 +59,9 @@ export default function AdminCategories() {
     const c = cats[idx];
     const cnt = counts[c.name] ?? c.count ?? 0;
     if (cnt > 0) {
-      return setErr(`Cannot remove "${c.name}" — ${cnt} product(s) still use it. Reassign those products first.`);
+      return setErr(t('admin_cat_in_use', { name: c.name, count: cnt }));
     }
-    if (!window.confirm(`Remove "${c.name}" from the store?`)) return;
+    if (!window.confirm(t('admin_cat_confirm_remove', { name: c.name }))) return;
     setCats(cats.filter((_, i) => i !== idx));
   };
 
@@ -70,11 +72,11 @@ export default function AdminCategories() {
       id: c.isNew ? undefined : c.id,
       name: c.name.trim(),
     }));
-    if (payload.some((c) => !c.name)) return setErr('Category names cannot be empty.');
+    if (payload.some((c) => !c.name)) return setErr(t('admin_cat_empty'));
     const seen = new Set();
     for (const c of payload) {
       const low = c.name.toLowerCase();
-      if (seen.has(low)) return setErr(`Duplicate category: "${c.name}".`);
+      if (seen.has(low)) return setErr(t('admin_cat_dup_named', { name: c.name }));
       seen.add(low);
     }
     setBusy(true);
@@ -88,7 +90,7 @@ export default function AdminCategories() {
       });
       setSaved(true);
     } catch (e) {
-      setErr(e.response?.data?.message || 'Save failed');
+      setErr(e.response?.data?.message || t('admin_save_failed'));
     } finally {
       setBusy(false);
     }
@@ -97,36 +99,35 @@ export default function AdminCategories() {
   return (
     <>
       <div className="admin-topbar">
-        <h1>Categories</h1>
-        {saved && <span style={{ color: 'var(--good)' }}>✔ Saved</span>}
+        <h1>{t('admin_categories')}</h1>
+        {saved && <span style={{ color: 'var(--good)' }}>{t('admin_saved')}</span>}
       </div>
 
       <div className="panel" style={{ maxWidth: 640 }}>
         <p className="muted" style={{ fontSize: '0.85rem', marginBottom: 14 }}>
-          Add, rename, reorder or remove store categories. Renames are applied to every product
-          already using a category; a category with products cannot be removed.
+          {t('admin_categories_intro')}
         </p>
 
         <div className="table-tools" style={{ marginBottom: 10 }}>
           <input
-            placeholder="New category name…"
+            placeholder={t('admin_new_category_ph')}
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); add(); } }}
             style={{ flex: 1, maxWidth: 320 }}
           />
-          <button className="btn small" onClick={add}>+ Add Category</button>
+          <button className="btn small" onClick={add}>{t('admin_add_category')}</button>
         </div>
 
         {cats.length === 0 ? (
-          <p className="muted">No categories yet.</p>
+          <p className="muted">{t('admin_no_categories')}</p>
         ) : (
           <table className="data-table">
             <thead>
               <tr>
-                <th>Order</th>
-                <th>Name</th>
-                <th>Products</th>
+                <th>{t('admin_order')}</th>
+                <th>{t('admin_name')}</th>
+                <th>{t('admin_products_count')}</th>
                 <th></th>
               </tr>
             </thead>
@@ -144,7 +145,7 @@ export default function AdminCategories() {
                   </td>
                   <td className="muted">{(counts[c.name] ?? c.count ?? 0)}</td>
                   <td>
-                    <button className="btn small danger" onClick={() => remove(i)}>Remove</button>
+                    <button className="btn small danger" onClick={() => remove(i)}>{t('admin_remove')}</button>
                   </td>
                 </tr>
               ))}
@@ -155,7 +156,7 @@ export default function AdminCategories() {
         {err && <div className="field-error mt-8">{err}</div>}
         <div className="row mt-16" style={{ gap: 10 }}>
           <button className="btn primary" disabled={busy} onClick={save}>
-            {busy ? 'Saving…' : 'Save Categories'}
+            {busy ? t('admin_saving') : t('admin_save_categories')}
           </button>
         </div>
       </div>
