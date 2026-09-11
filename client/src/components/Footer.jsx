@@ -12,7 +12,7 @@ export default function Footer({ settings, showNewsletter }) {
 
   const fallbackCats = ['Surplus', 'Knives & Tools', 'Local Crafts'];
   const storedCats = Array.isArray(settings?.categories) && settings.categories.length
-    ? settings.categories
+    ? settings.categories.map((c) => (c && typeof c === 'object' ? c.name : String(c)))
     : fallbackCats;
   const shopCats = storedCats.slice(0, 3);
 
